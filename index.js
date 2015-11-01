@@ -1,9 +1,10 @@
 var postcss = require("postcss");
 var Promise = require("bluebird");
-var trim = require("phpfn")("trim");
+var phpfn = require("phpfn");
 var hh = require("http-https");
 var isUrl = require("is-url");
 
+var trim = phpfn("trim");
 var space = postcss.list.space;
 
 module.exports = postcss.plugin("postcss-import-url", postcssImportUrl);
@@ -15,15 +16,12 @@ function postcssImportUrl(options) {
 		css.walkAtRules("import", function checkAtRule(atRule) {
 			var params = space(atRule.params);
 			var remoteFile = cleanupRemoteFile(params[0]);
-			var mediaQueries = params.slice(1).join(" ");
-			if (mediaQueries) {
-				var mediaNode = postcss.atRule({ name: "media", params: mediaQueries });				
-			}
 			if (!isUrl(remoteFile)) return;
-			var promise = createPromise(remoteFile).then(function(body) {
-				var otherNodes = body;
-				if (mediaNode) {
-					mediaNode.append(body);
+			var mediaQueries = params.slice(1).join(" ");
+			var promise = createPromise(remoteFile).then(function(otherNodes) {
+				if (mediaQueries) {
+					var mediaNode = postcss.atRule({ name: "media", params: mediaQueries });
+					mediaNode.append(otherNodes);
 					otherNodes = mediaNode;
 				}
 				// console.log(otherNodes.toString());
