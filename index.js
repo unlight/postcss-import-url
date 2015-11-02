@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
+function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); }
+
 var _postcss = require("postcss");
 
 var _postcss2 = _interopRequireDefault(_postcss);
@@ -36,31 +38,30 @@ function postcssImportUrl(options) {
 	return function (css) {
 		var imports = [];
 		css.walkAtRules("import", function checkAtRule(atRule) {
-			var params = space(atRule.params);
-			var remoteFile = cleanupRemoteFile(params[0]);
+			var _space = space(atRule.params);
+
+			var _space2 = _toArray(_space);
+
+			var remoteFile = _space2[0];
+
+			var otherParams = _space2.slice(1);
+
+			remoteFile = cleanupRemoteFile(remoteFile);
 			if (!(0, _isUrl2["default"])(remoteFile)) return;
-			var mediaQueries = params.slice(1).join(" ");
-			var promise = createPromise(remoteFile).then(function (otherNodes) {
+			var mediaQueries = otherParams.join(" ");
+			var promise = createPromise(remoteFile).then(function (otherNode) {
 				if (mediaQueries) {
 					var mediaNode = _postcss2["default"].atRule({ name: "media", params: mediaQueries });
-					mediaNode.append(otherNodes);
-					otherNodes = mediaNode;
+					mediaNode.append(otherNode);
+					otherNode = mediaNode;
 				}
-				// console.log(otherNodes.toString());
-				atRule.replaceWith(otherNodes);
+				// console.log(otherNode.toString());
+				atRule.replaceWith(otherNode);
 			});
 			imports.push(promise);
 		});
 		return _bluebird2["default"].all(imports);
 	};
-}
-
-function cleanupRemoteFile(value) {
-	if (value.substr(0, 3) === "url") {
-		value = value.substr(3);
-	}
-	value = trim(value, "'\"()");
-	return value;
 }
 
 function createPromise(remoteFile) {
@@ -78,6 +79,14 @@ function createPromise(remoteFile) {
 		request.end();
 	}
 	return new _bluebird2["default"](executor);
+}
+
+function cleanupRemoteFile(value) {
+	if (value.substr(0, 3) === "url") {
+		value = value.substr(3);
+	}
+	value = trim(value, "'\"()");
+	return value;
 }
 module.exports = exports["default"];
 //# sourceMappingURL=index.js.map
