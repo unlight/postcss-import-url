@@ -9,8 +9,7 @@ const space = postcss.list.space;
 
 export default postcss.plugin("postcss-import-url", postcssImportUrl);
 
-function postcssImportUrl(options) {
-	options = options || {};
+function postcssImportUrl(options = {}) {
 	return function(css) {
 		const imports = [];
 		css.walkAtRules("import", function checkAtRule(atRule) {

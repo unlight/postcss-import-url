@@ -19,9 +19,11 @@
   "devDependencies": {
     "babel": "^5.8.29",
     "chai": "^3.4.0",
+    "mocha": "^2.3.3",
     "sigh": "^0.12.22",
     "sigh-babel": "^0.11.6",
-    "sigh-mocha": "^0.1.2"
+    "sigh-mocha": "^0.1.2",
+    "sigh-process": "0.0.1"
   },
   "scripts": {
     "test": "gulp"

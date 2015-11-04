@@ -1,4 +1,4 @@
-var glob, babel, write, pipeline, mocha;
+var glob, babel, write, pipeline, mocha, process;
 
 module.exports = function(pipelines) {
 	pipelines.build = [
@@ -8,7 +8,12 @@ module.exports = function(pipelines) {
 		babel({
 			modules: "common"
 		}),
-		write(".")
+		write("."),
+		pipeline("eslint")
+	];
+
+	pipelines["eslint"] = [
+		process("eslint.cmd src")
 	];
 
 	pipelines["tests"] = [
@@ -19,7 +24,7 @@ module.exports = function(pipelines) {
 	];
 
 	pipelines.explicit.mocha = [mocha({
-		reporter: "min",
+		reporter: "spec",
 		files: "test/*.js"
 	})];
 };

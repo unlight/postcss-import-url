@@ -33,8 +33,9 @@ var space = _postcss2["default"].list.space;
 
 exports["default"] = _postcss2["default"].plugin("postcss-import-url", postcssImportUrl);
 
-function postcssImportUrl(options) {
-	options = options || {};
+function postcssImportUrl() {
+	var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
 	return function (css) {
 		var imports = [];
 		css.walkAtRules("import", function checkAtRule(atRule) {
