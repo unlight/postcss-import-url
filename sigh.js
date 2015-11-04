@@ -8,12 +8,7 @@ module.exports = function(pipelines) {
 		babel({
 			modules: "common"
 		}),
-		write("."),
-		pipeline("eslint")
-	];
-
-	pipelines["eslint"] = [
-		process("eslint.cmd src")
+		write(".")
 	];
 
 	pipelines["tests"] = [
@@ -21,6 +16,10 @@ module.exports = function(pipelines) {
 		pipeline({
 			activate: true
 		}, "mocha")
+	];
+
+	pipelines["eslint"] = [
+		process("eslint.cmd src")
 	];
 
 	pipelines.explicit.mocha = [mocha({
