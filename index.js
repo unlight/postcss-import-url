@@ -1,38 +1,84 @@
-var postcss = require("postcss");
-var Promise = require("bluebird");
-var trim = require("phpfn")("trim");
-var hh = require("http-https");
-var isUrl = require("is-url");
+"use strict";
 
-var space = postcss.list.space;
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-module.exports = postcss.plugin("postcss-import-url", postcssImportUrl);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); }
+
+var _postcss = require("postcss");
+
+var _postcss2 = _interopRequireDefault(_postcss);
+
+var _bluebird = require("bluebird");
+
+var _bluebird2 = _interopRequireDefault(_bluebird);
+
+var _phpfn = require("phpfn");
+
+var _phpfn2 = _interopRequireDefault(_phpfn);
+
+var _httpHttps = require("http-https");
+
+var _httpHttps2 = _interopRequireDefault(_httpHttps);
+
+var _isUrl = require("is-url");
+
+var _isUrl2 = _interopRequireDefault(_isUrl);
+
+var trim = (0, _phpfn2["default"])("trim");
+var space = _postcss2["default"].list.space;
+
+exports["default"] = _postcss2["default"].plugin("postcss-import-url", postcssImportUrl);
 
 function postcssImportUrl(options) {
 	options = options || {};
-	return function(css) {
+	return function (css) {
 		var imports = [];
 		css.walkAtRules("import", function checkAtRule(atRule) {
-			var params = space(atRule.params);
-			var remoteFile = cleanupRemoteFile(params[0]);
-			var mediaQueries = params.slice(1).join(" ");
-			if (mediaQueries) {
-				var mediaNode = postcss.atRule({ name: "media", params: mediaQueries });				
-			}
-			if (!isUrl(remoteFile)) return;
-			var promise = createPromise(remoteFile).then(function(body) {
-				var otherNodes = body;
-				if (mediaNode) {
-					mediaNode.append(body);
-					otherNodes = mediaNode;
+			var _space = space(atRule.params);
+
+			var _space2 = _toArray(_space);
+
+			var remoteFile = _space2[0];
+
+			var otherParams = _space2.slice(1);
+
+			remoteFile = cleanupRemoteFile(remoteFile);
+			if (!(0, _isUrl2["default"])(remoteFile)) return;
+			var mediaQueries = otherParams.join(" ");
+			var promise = createPromise(remoteFile).then(function (otherNode) {
+				if (mediaQueries) {
+					var mediaNode = _postcss2["default"].atRule({ name: "media", params: mediaQueries });
+					mediaNode.append(otherNode);
+					otherNode = mediaNode;
 				}
-				// console.log(otherNodes.toString());
-				atRule.replaceWith(otherNodes);
+				// console.log(otherNode.toString());
+				atRule.replaceWith(otherNode);
 			});
 			imports.push(promise);
 		});
-		return Promise.all(imports);
+		return _bluebird2["default"].all(imports);
 	};
+}
+
+function createPromise(remoteFile) {
+	function executor(resolve, reject) {
+		var request = _httpHttps2["default"].get(remoteFile, function (response) {
+			var body = "";
+			response.on("data", function (chunk) {
+				return body += chunk.toString();
+			});
+			response.on("end", function () {
+				return resolve(body);
+			});
+		});
+		request.on("error", reject);
+		request.end();
+	}
+	return new _bluebird2["default"](executor);
 }
 
 function cleanupRemoteFile(value) {
@@ -42,20 +88,5 @@ function cleanupRemoteFile(value) {
 	value = trim(value, "'\"()");
 	return value;
 }
-
-function createPromise(remoteFile) {
-	function executor(resolve, reject) {
-		var request = hh.get(remoteFile, function(response) {
-			var body = "";
-			response.on("data", function(chunk) {
-				body += chunk.toString();
-			});
-			response.on("end", function() {
-				resolve(body);
-			});
-		});
-		request.on("error", reject);
-		request.end();
-	}
-	return new Promise(executor);
-}
+module.exports = exports["default"];
+//# sourceMappingURL=index.js.map
