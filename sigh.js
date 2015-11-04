@@ -1,7 +1,7 @@
 var glob, babel, write, pipeline, mocha, process;
 
 module.exports = function(pipelines) {
-	pipelines.build = [
+	pipelines["build"] = [
 		glob({
 			basePath: "src"
 		}, "*.js"),
