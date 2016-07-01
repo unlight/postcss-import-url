@@ -29,3 +29,34 @@ postcss([ require('postcss-import-url') ])
 ```
 
 See [PostCSS] docs for examples for your environment.
+
+### Options
+
+- `recurse` (boolean) When `true`, the plugin will import URLs recursively. For example:
+
+  **style1.css**
+  ```css
+  @import url("http://example.com/style2.css");
+  ```
+
+  **style2.css**
+  ```css
+  @import url("http://example.com/style3.css");
+  ```
+
+  **style3.css**
+  ```css
+  p {color: red;}
+  ```
+
+  Will result in:
+  ```css
+  p {color: red;}
+  ```
+
+  Instead of:
+  ```css
+  @import url("http://example.com/style3.css");
+  ```
+
+  Default is `false`.

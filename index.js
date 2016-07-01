@@ -11,9 +11,30 @@ module.exports = postcss.plugin("postcss-import-url", postcssImportUrl);
 
 function postcssImportUrl(options) {
 	options = options || {};
-	return function(css) {
+	var importEncoutered;
+	return function (css) {
+		if (!options.recurse) {
+			return inline(css);
+		} else {
+			return recurse(css);
+		}
+	}
+	function recurse(css) {
+		return new Promise(function (resolve) {
+			importEncoutered = false;
+			inline(css).then(function () {
+				if (importEncoutered) {
+					return recurse(css);
+				}
+			}).then(function () {
+				resolve();
+			});
+		});
+	}
+	function inline(css) {
 		var imports = [];
 		css.walkAtRules("import", function checkAtRule(atRule) {
+			importEncoutered = true;
 			var params = space(atRule.params);
 			var remoteFile = cleanupRemoteFile(params[0]);
 			if (!isUrl(remoteFile)) return;
@@ -30,7 +51,7 @@ function postcssImportUrl(options) {
 			imports.push(promise);
 		});
 		return Promise.all(imports);
-	};
+	}
 }
 
 function cleanupRemoteFile(value) {
