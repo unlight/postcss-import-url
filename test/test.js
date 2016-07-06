@@ -127,7 +127,7 @@ describe("import url tangerine", function() {
 
 });
 
-describe("recure import", function() {
+describe("recursive import", function() {
 
 	it('ping server', (done) => {
 		tcpp.probe('localhost', 1234, function(err, available) {
@@ -165,22 +165,22 @@ describe("recure import", function() {
 		});
 
 		it("fixture-2 contains class a", function(done) {
-			var input = '@import url(http://localhost:1234/fixture-2/style.css)';
+			var input = "@import url(http://localhost:1234/fixture-2/style.css)";
 			testContains(input, 'content: ".a"', opts, done);
 		});
 
 		it("fixture-2 contains class b1", function(done) {
-			var input = '@import url(http://localhost:1234/fixture-2/style.css)';
+			var input = "@import url(http://localhost:1234/fixture-2/style.css)";
 			testContains(input, 'content: ".b1"', opts, done);
 		});
 
 		it("fixture-2 contains class b", function(done) {
-			var input = '@import url(http://localhost:1234/fixture-2/style.css)';
+			var input = "@import url(http://localhost:1234/fixture-2/style.css)";
 			testContains(input, 'content: ".b"', opts, done);
 		});
 
 		it("fixture-2 contains class style content", function(done) {
-			var input = '@import url(http://localhost:1234/fixture-2/style.css)';
+			var input = "@import url(http://localhost:1234/fixture-2/style.css)";
 			testContains(input, 'content: ".style"', opts, done);
 		});
 	});

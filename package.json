@@ -10,10 +10,9 @@
   "license": "Beerware",
   "homepage": "https://github.com/unlight/postcss-import-url",
   "dependencies": {
-    "bluebird": "^3.0.2",
     "http-https": "^1.0.0",
     "is-url": "^1.2.1",
-    "phpfn": "^1.0.0",
+    "lodash.trim": "^4.4.0",
     "postcss": "^5.0.2",
     "resolve-relative-url": "1.0.0"
   },

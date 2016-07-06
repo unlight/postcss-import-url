@@ -1,8 +1,7 @@
 var postcss = require("postcss");
-var phpfn = require("phpfn");
 var hh = require("http-https");
 var isUrl = require("is-url");
-var trim = phpfn("trim"); // TODO: replace by lodash
+var trim = require("lodash.trim");
 var resolveRelative = require("resolve-relative-url");
 
 var space = postcss.list.space;
