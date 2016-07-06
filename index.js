@@ -4,14 +4,13 @@ var isUrl = require("is-url");
 var trim = require("lodash.trim");
 var resolveRelative = require("resolve-relative-url");
 
+var defaults = {
+	recursive: true
+};
 var space = postcss.list.space;
 
-module.exports = postcss.plugin("postcss-import-url", postcssImportUrl);
-
-// var resolveRelative = require('resolve-relative-url');
-
 function postcssImportUrl(options) {
-	options = options || {};
+	options = Object.assign({}, defaults, options || {});
 	return function importUrl(tree, dummy, parentRemoteFile) {
 		var imports = [];
 		tree.walkAtRules("import", function checkAtRule(atRule) {
@@ -32,7 +31,7 @@ function postcssImportUrl(options) {
 					mediaNode.append(newNode);
 					newNode = mediaNode;
 				}
-				var p = (options.recurse) ? importUrl(newNode, null, r.parent) : Promise.resolve(newNode);
+				var p = (options.recursive) ? importUrl(newNode, null, r.parent) : Promise.resolve(newNode);
 				return p.then(function(tree) {
 					atRule.replaceWith(tree);
 				});
@@ -43,6 +42,8 @@ function postcssImportUrl(options) {
 		});
 	};
 }
+
+module.exports = postcss.plugin("postcss-import-url", postcssImportUrl);
 
 function cleanupRemoteFile(value) {
 	if (value.substr(0, 3) === "url") {

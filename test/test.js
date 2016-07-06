@@ -75,7 +75,6 @@ describe("import with media queries", function() {
 
 });
 
-
 describe("skip non remote files", function() {
 
 	it("local", function(done) {
@@ -136,7 +135,7 @@ describe("recursive import", function() {
 	});
 
 	var opts = {
-		recurse: true
+		recursive: true
 	};
 
 	describe("fixture-1", function() {

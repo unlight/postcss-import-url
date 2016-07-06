@@ -33,7 +33,7 @@ postcss([importUrl(options)]);
 See [PostCSS](https://github.com/postcss/postcss#usage) docs for examples for your environment.
 
 ## Options
-* `recursive` (boolean) Do import URLs recursively (default: `true`)
+* `recursive` (boolean) To import URLs recursively (default: `true`)
 
 ## Changelog
 1.0.0 (Nov 1, 2015)
