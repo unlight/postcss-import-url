@@ -33,7 +33,7 @@ function postcssImportUrl(options) {
 					mediaNode.append(newNode);
 					newNode = mediaNode;
 				}
-				var p = (options.recurse) ? importUrl(newNode, null, r.parent) : Promise.resolve(tree);
+				var p = (options.recurse) ? importUrl(newNode, null, r.parent) : Promise.resolve(newNode);
 				return p.then(function(tree) {
 					atRule.replaceWith(tree);
 				});

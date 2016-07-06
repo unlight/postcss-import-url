@@ -157,11 +157,31 @@ describe("recure import", function() {
 		});
 	});
 
-	describe.skip("fixture-2", function() {
+	describe("fixture-2", function() {
 
-		it("fixture-2", function(done) {
+		it("fixture-2 contains class a1", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-2/style.css)';
 			testContains(input, 'content: ".a1"', opts, done);
+		});
+
+		it("fixture-2 contains class a", function(done) {
+			var input = '@import url(http://localhost:1234/fixture-2/style.css)';
+			testContains(input, 'content: ".a"', opts, done);
+		});
+
+		it("fixture-2 contains class b1", function(done) {
+			var input = '@import url(http://localhost:1234/fixture-2/style.css)';
+			testContains(input, 'content: ".b1"', opts, done);
+		});
+
+		it("fixture-2 contains class b", function(done) {
+			var input = '@import url(http://localhost:1234/fixture-2/style.css)';
+			testContains(input, 'content: ".b"', opts, done);
+		});
+
+		it("fixture-2 contains class style content", function(done) {
+			var input = '@import url(http://localhost:1234/fixture-2/style.css)';
+			testContains(input, 'content: ".style"', opts, done);
 		});
 	});
 
