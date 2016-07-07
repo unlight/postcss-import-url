@@ -1,37 +1,49 @@
 var postcss = require("postcss");
-var Promise = require("bluebird");
-var phpfn = require("phpfn");
 var hh = require("http-https");
 var isUrl = require("is-url");
+var trim = require("lodash.trim");
+var resolveRelative = require("resolve-relative-url");
 
-var trim = phpfn("trim");
+var defaults = {
+	recursive: true
+};
 var space = postcss.list.space;
 
-module.exports = postcss.plugin("postcss-import-url", postcssImportUrl);
-
 function postcssImportUrl(options) {
-	options = options || {};
-	return function(css) {
+	options = Object.assign({}, defaults, options || {});
+	return function importUrl(tree, dummy, parentRemoteFile) {
 		var imports = [];
-		css.walkAtRules("import", function checkAtRule(atRule) {
+		tree.walkAtRules("import", function checkAtRule(atRule) {
 			var params = space(atRule.params);
 			var remoteFile = cleanupRemoteFile(params[0]);
+			if (parentRemoteFile) {
+				remoteFile = resolveRelative(remoteFile, parentRemoteFile);
+			}
 			if (!isUrl(remoteFile)) return;
-			var mediaQueries = params.slice(1).join(" ");
-			var promise = createPromise(remoteFile).then(function(otherNodes) {
+			imports[imports.length] = createPromise(remoteFile).then(function(r) {
+				var newNode = postcss.parse(r.body);
+				var mediaQueries = params.slice(1).join(" ");
 				if (mediaQueries) {
-					var mediaNode = postcss.atRule({ name: "media", params: mediaQueries });
-					mediaNode.append(otherNodes);
-					otherNodes = mediaNode;
+					var mediaNode = postcss.atRule({
+						name: "media",
+						params: mediaQueries
+					});
+					mediaNode.append(newNode);
+					newNode = mediaNode;
 				}
-				// console.log(otherNodes.toString());
-				atRule.replaceWith(otherNodes);
+				var p = (options.recursive) ? importUrl(newNode, null, r.parent) : Promise.resolve(newNode);
+				return p.then(function(tree) {
+					atRule.replaceWith(tree);
+				});
 			});
-			imports.push(promise);
 		});
-		return Promise.all(imports);
+		return Promise.all(imports).then(function() {
+			return tree;
+		});
 	};
 }
+
+module.exports = postcss.plugin("postcss-import-url", postcssImportUrl);
 
 function cleanupRemoteFile(value) {
 	if (value.substr(0, 3) === "url") {
@@ -49,7 +61,10 @@ function createPromise(remoteFile) {
 				body += chunk.toString();
 			});
 			response.on("end", function() {
-				resolve(body);
+				resolve({
+					body: body,
+					parent: remoteFile
+				});
 			});
 		});
 		request.on("error", reject);

@@ -1,6 +1,6 @@
 # postcss-import-url
 
-[PostCSS] plugin inlines remote files.
+[PostCSS](https://github.com/postcss/postcss) plugin inlines remote files.
 
 ```css
 /* Input example */
@@ -25,7 +25,19 @@ body {
 ## Usage
 
 ```js
-postcss([ require('postcss-import-url') ])
+var importUrl = require('postcss-import-url');
+var options = {};
+postcss([importUrl(options)]);
 ```
 
-See [PostCSS] docs for examples for your environment.
+See [PostCSS](https://github.com/postcss/postcss#usage) docs for examples for your environment.
+
+## Options
+* `recursive` (boolean) To import URLs recursively (default: `true`)
+
+## Changelog
+1.0.0 (Nov 1, 2015)
+- first release
+
+2.0.0 (Jul 8, 2016)
+- added recursive option
