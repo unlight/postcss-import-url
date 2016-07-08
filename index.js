@@ -3,14 +3,14 @@ var hh = require("http-https");
 var isUrl = require("is-url");
 var trim = require("lodash.trim");
 var resolveRelative = require("resolve-relative-url");
-
+var assign = require("lodash.assign");
 var defaults = {
 	recursive: true
 };
 var space = postcss.list.space;
 
 function postcssImportUrl(options) {
-	options = Object.assign({}, defaults, options || {});
+	options = assign({}, defaults, options || {});
 	return function importUrl(tree, dummy, parentRemoteFile) {
 		var imports = [];
 		tree.walkAtRules("import", function checkAtRule(atRule) {

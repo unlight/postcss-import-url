@@ -41,3 +41,6 @@ See [PostCSS](https://github.com/postcss/postcss#usage) docs for examples for yo
 
 2.0.0 (Jul 8, 2016)
 - added recursive option
+
+2.1.0 (Jul 9, 2016)
+- replaced Object.assign by _.assign
