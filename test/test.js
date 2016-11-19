@@ -185,3 +185,18 @@ describe("recursive import", function() {
 	});
 
 });
+
+describe("google font woff", function() {
+
+	it("option modernBrowser should import woff", function(done) {
+		var input = "@import url(http://fonts.googleapis.com/css?family=Tangerine);";
+		testContains(input, "woff2) format('woff2')", {modernBrowser: true}, done);
+	});
+	
+	it("option agent should import woff", function(done) {
+		var input = "@import url(http://fonts.googleapis.com/css?family=Tangerine);";
+		var opts = {userAgent: 'Mozilla/5.0 AppleWebKit/537.36 Chrome/54.0.2840.99 Safari/537.36'};
+		testContains(input, "woff2) format('woff2')", opts, done);
+	});
+
+});

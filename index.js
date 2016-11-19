@@ -5,9 +5,12 @@ var trim = require("lodash.trim");
 var resolveRelative = require("resolve-relative-url");
 var assign = require("lodash.assign");
 var defaults = {
-	recursive: true
+	recursive: true,
+	modernBrowser: false,
+	userAgent: null
 };
 var space = postcss.list.space;
+var url = require('url');
 
 function postcssImportUrl(options) {
 	options = assign({}, defaults, options || {});
@@ -20,7 +23,7 @@ function postcssImportUrl(options) {
 				remoteFile = resolveRelative(remoteFile, parentRemoteFile);
 			}
 			if (!isUrl(remoteFile)) return;
-			imports[imports.length] = createPromise(remoteFile).then(function(r) {
+			imports[imports.length] = createPromise(remoteFile, options).then(function(r) {
 				var newNode = postcss.parse(r.body);
 				var mediaQueries = params.slice(1).join(" ");
 				if (mediaQueries) {
@@ -53,9 +56,17 @@ function cleanupRemoteFile(value) {
 	return value;
 }
 
-function createPromise(remoteFile) {
+function createPromise(remoteFile, options) {
+	var reqOptions = url.parse(remoteFile);
+	reqOptions.headers = {};
+	if (options.modernBrowser) {
+		reqOptions.headers['user-agent'] = 'Mozilla/5.0 AppleWebKit/538.0 Chrome/54.0 Safari/538';
+	}
+	if (options.userAgent) {
+		reqOptions.headers['user-agent'] = String(options.userAgent);
+	}
 	function executor(resolve, reject) {
-		var request = hh.get(remoteFile, function(response) {
+		var request = hh.get(reqOptions, function(response) {
 			var body = "";
 			response.on("data", function(chunk) {
 				body += chunk.toString();
