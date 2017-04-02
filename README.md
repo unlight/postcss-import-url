@@ -1,5 +1,4 @@
 # postcss-import-url
-
 [PostCSS](https://github.com/postcss/postcss) plugin inlines remote files.
 
 ```css
