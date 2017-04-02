@@ -1,7 +1,4 @@
 # postcss-import-url
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/unlight/postcss-import-url.svg)](https://greenkeeper.io/)
-
 [PostCSS](https://github.com/postcss/postcss) plugin inlines remote files.
 
 ```css
