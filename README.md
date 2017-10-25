@@ -26,7 +26,11 @@ body {
 ```js
 var importUrl = require('postcss-import-url');
 var options = {};
-postcss([importUrl(options)]);
+postcss([importUrl(options)])
+    .process(css, {
+		// Define a `from` option to resolve relative @imports to a url
+        from: 'http://example.com/styles.css',
+    });
 ```
 
 See [PostCSS](https://github.com/postcss/postcss#usage) docs for examples for your environment.
@@ -37,8 +41,8 @@ See [PostCSS](https://github.com/postcss/postcss#usage) docs for examples for yo
 * `userAgent` (string) Custom user-agent header (default: `null`)
 
 ## Known Issues
-* Google fonts returns different file types per the user agent. Because postcss runs in a shell, 
-Google returns truetype fonts rather than the better woff2 format.  
+* Google fonts returns different file types per the user agent. Because postcss runs in a shell,
+Google returns truetype fonts rather than the better woff2 format.
 Use option `modernBrowser` to explicitly load woff2 fonts.
 
 ## Changelog

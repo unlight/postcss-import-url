@@ -14,13 +14,13 @@ var url = require('url');
 
 function postcssImportUrl(options) {
 	options = assign({}, defaults, options || {});
-	return function importUrl(tree, dummy, parentRemoteFile) {
+	return function importUrl(tree) {
 		var imports = [];
 		tree.walkAtRules("import", function checkAtRule(atRule) {
 			var params = space(atRule.params);
 			var remoteFile = cleanupRemoteFile(params[0]);
-			if (parentRemoteFile) {
-				remoteFile = resolveRelative(remoteFile, parentRemoteFile);
+			if (atRule.source && atRule.source.input && atRule.source.input.file) {
+				remoteFile = resolveRelative(remoteFile, atRule.source.input.file);
 			}
 			if (!isUrl(remoteFile)) return;
 			imports[imports.length] = createPromise(remoteFile, options).then(function(r) {
@@ -34,7 +34,7 @@ function postcssImportUrl(options) {
 					mediaNode.append(newNode);
 					newNode = mediaNode;
 				}
-				var p = (options.recursive) ? importUrl(newNode, null, r.parent) : Promise.resolve(newNode);
+				var p = (options.recursive) ? importUrl(newNode, null) : Promise.resolve(newNode);
 				return p.then(function(tree) {
 					atRule.replaceWith(tree);
 				});
