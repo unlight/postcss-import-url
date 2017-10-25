@@ -7,9 +7,12 @@ var tcpp = require('tcp-ping');
 var outputTangerine = fs.readFileSync(__dirname + "/tangerine.txt", {
 	encoding: "utf8"
 });
+var fixture1Css = fs.readFileSync(__dirname + "/fixture-1/style.css", {
+	encoding: "utf8"
+});
 
-var testEqual = function(input, output, opts, done) {
-	postcss([plugin(opts)]).process(input).then(function(result) {
+var testEqual = function(input, output, opts, done, postcssOptions) {
+	postcss([plugin(opts)]).process(input, postcssOptions).then(function(result) {
 		expect(result.css.trim()).to.eql(output.trim());
 		expect(result.warnings()).to.be.empty;
 		done();
@@ -18,8 +21,8 @@ var testEqual = function(input, output, opts, done) {
 	});
 };
 
-var testContains = function(input, value, opts, done) {
-	postcss([plugin(opts)]).process(input).then(function(result) {
+var testContains = function(input, value, opts, done, postcssOptions) {
+	postcss([plugin(opts)]).process(input, postcssOptions).then(function(result) {
 		expect(result.css).to.contain(value);
 		expect(result.warnings()).to.be.empty;
 		done();
@@ -129,7 +132,7 @@ describe("import url tangerine", function() {
 describe("recursive import", function() {
 
 	it('ping server', (done) => {
-		tcpp.probe('localhost', 1234, function(err, available) {
+		tcpp.probe('localhost', 1234, function(err) {
 			done(err);
 		});
 	});
@@ -153,6 +156,13 @@ describe("recursive import", function() {
 		it("fixture-1 contains class style content", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-1/style.css)';
 			testContains(input, 'content: ".style"', opts, done);
+		});
+
+		it("fixture-1 contains class a when passed as a string", function(done) {
+			var input = fixture1Css;
+			testContains(input, 'content: ".a"', opts, done, {
+				from: 'http://localhost:1234/fixture-1/style.css',
+			});
 		});
 	});
 
