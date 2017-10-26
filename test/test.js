@@ -10,7 +10,7 @@ var outputTangerine = fs.readFileSync(__dirname + "/tangerine.txt", {
 
 var testEqual = function(input, output, opts, done) {
 	postcss([plugin(opts)]).process(input).then(function(result) {
-		expect(result.css).to.eql(output);
+		expect(result.css.trim()).to.eql(output.trim());
 		expect(result.warnings()).to.be.empty;
 		done();
 	}).catch(function(error) {
@@ -69,7 +69,7 @@ describe("import with media queries", function() {
 
 		it("contains src local", function(done) {
 			var input = "@import url('http://fonts.googleapis.com/css?family=Tangerine') (min-width: 25em);";
-			testContains(input, "src: local('Tangerine')", {}, done);
+			testContains(input, "src: local('Tangerine Regular')", {}, done);
 		});
 	});
 
@@ -92,7 +92,7 @@ describe("skip non remote files", function() {
 	});
 
 	// it("no protocol", function(done) {
-	// 	var input = "@import url(//example.com/a.css)"; 
+	// 	var input = "@import url(//example.com/a.css)";
 	// 	test(input, input, {}, done);
 	// });
 });
@@ -192,7 +192,7 @@ describe("google font woff", function() {
 		var input = "@import url(http://fonts.googleapis.com/css?family=Tangerine);";
 		testContains(input, "woff2) format('woff2')", {modernBrowser: true}, done);
 	});
-	
+
 	it("option agent should import woff", function(done) {
 		var input = "@import url(http://fonts.googleapis.com/css?family=Tangerine);";
 		var opts = {userAgent: 'Mozilla/5.0 AppleWebKit/537.36 Chrome/54.0.2840.99 Safari/537.36'};
