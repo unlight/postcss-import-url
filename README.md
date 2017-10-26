@@ -28,7 +28,7 @@ var importUrl = require('postcss-import-url');
 var options = {};
 postcss([importUrl(options)])
     .process(css, {
-		// Define a `from` option to resolve relative @imports to a url
+        // Define a `from` option to resolve relative @imports in the initial css to a url.
         from: 'http://example.com/styles.css',
     });
 ```
