@@ -1,31 +1,34 @@
 {
   "name": "postcss-import-url",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "PostCSS plugin inlines remote files.",
   "keywords": [
     "postcss",
     "css",
     "postcss-plugin"
   ],
-  "license": "Beerware",
+  "license": "MIT",
   "homepage": "https://github.com/unlight/postcss-import-url",
   "dependencies": {
     "http-https": "^1.0.0",
-    "is-url": "^1.2.1",
-    "lodash.assign": "^4.0.9",
-    "lodash.trim": "^4.4.0",
-    "postcss": "^5.0.2",
-    "resolve-relative-url": "1.0.0"
+    "is-url": "^1.2.2",
+    "lodash.assign": "^4.2.0",
+    "lodash.trim": "^4.5.1",
+    "resolve-relative-url": "^1.0.0"
+  },
+  "peerDependencies": {
+    "postcss": "^6.0.13"
   },
   "devDependencies": {
-    "chai": "^3.2.0",
-    "gulp": "^3.9.0",
-    "gulp-connect": "5.0.0",
-    "gulp-eslint": "3.0.1",
-    "gulp-mocha": "^4.3.0",
-    "tcp-ping": "0.1.1"
+    "chai": "^4.1.2",
+    "gulp": "^3.9.1",
+    "gulp-connect": "^5.0.0",
+    "gulp-eslint": "^4.0.0",
+    "gulp-mocha": "^4.3.1",
+    "tcp-ping": "^0.1.1"
   },
   "scripts": {
+    "pretest": "npm install postcss",
     "test": "gulp"
   },
   "main": "index.js",

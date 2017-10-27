@@ -46,6 +46,8 @@ Google returns truetype fonts rather than the better woff2 format.
 Use option `modernBrowser` to explicitly load woff2 fonts.
 
 ## Changelog
+* 3.0.1 (30 Oct 2017) - updated dependencies (postcss 6), moved postcss to peerDependencies
+* 3.0.0 (27 Oct 2017) - using `atRule.source.input.file` to resolve urls
 * 2.2.0 (19 Nov 2016) - added option modernBrowser
 * 2.1.1 (19 Oct 2016) - added to readme google font notice
 * 2.1.0 (09 Jul 2016) - replaced Object.assign by _.assign
