@@ -8,9 +8,19 @@ var outputTangerine = fs.readFileSync(__dirname + "/tangerine.txt", {
 	encoding: "utf8"
 });
 
+function trimLine(line) {
+	return line.trim();
+}
+
+function trimLines(value) {
+	value.split('\n')
+		.map(trimLine)
+		.join('\n');
+}
+
 var testEqual = function(input, output, opts, done) {
 	postcss([plugin(opts)]).process(input).then(function(result) {
-		expect(result.css.trim()).to.eql(output.trim());
+		expect(trimLines(result.css)).to.eql(trimLines(output));
 		expect(result.warnings()).to.be.empty;
 		done();
 	}).catch(function(error) {
