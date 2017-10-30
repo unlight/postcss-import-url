@@ -11,7 +11,7 @@ var fixture1Css = fs.readFileSync(__dirname + "/fixture-1/style.css", {
 	encoding: "utf8"
 });
 
-var testEqual = function(input, output, opts, done, postcssOptions) {
+var testEqual = function(input, output, opts, postcssOptions, done) {
 	postcss([plugin(opts)]).process(input, postcssOptions).then(function(result) {
 		expect(result.css.trim()).to.eql(output.trim());
 		expect(result.warnings()).to.be.empty;
@@ -21,7 +21,7 @@ var testEqual = function(input, output, opts, done, postcssOptions) {
 	});
 };
 
-var testContains = function(input, value, opts, done, postcssOptions) {
+var testContains = function(input, value, opts, postcssOptions, done) {
 	postcss([plugin(opts)]).process(input, postcssOptions).then(function(result) {
 		expect(result.css).to.contain(value);
 		expect(result.warnings()).to.be.empty;
@@ -35,44 +35,44 @@ describe("import with media queries", function() {
 
 	it("empty", function(done) {
 		var input = "@import 'http://fonts.googleapis.com/css?family=Tangerine'            ;";
-		testEqual(input, outputTangerine, {}, done);
+		testEqual(input, outputTangerine, {}, {}, done);
 	});
 
 	it("only screen", function(done) {
 		var input = "@import 'http://fonts.googleapis.com/css?family=Tangerine' only screen and (color)";
-		testContains(input, "@media only screen and (color)", {}, done);
+		testContains(input, "@media only screen and (color)", {}, {}, done);
 	});
 
 	it("rule with and", function(done) {
 		var input = "@import 'http://fonts.googleapis.com/css?family=Tangerine' screen and (orientation:landscape)";
-		testContains(input, "@media screen and (orientation:landscape)", {}, done);
+		testContains(input, "@media screen and (orientation:landscape)", {}, {}, done);
 	});
 
 	it("rule projection, tv", function(done) {
 		var input = "@import url('http://fonts.googleapis.com/css?family=Tangerine') projection, tv";
-		testContains(input, "@media projection, tv", {}, done);
+		testContains(input, "@media projection, tv", {}, {}, done);
 	});
 
 	it("rule print", function(done) {
 		var input = "@import url('http://fonts.googleapis.com/css?family=Tangerine') print";
-		testContains(input, "@media print", {}, done);
+		testContains(input, "@media print", {}, {}, done);
 	});
 
 	it("contains it", function(done) {
 		var input = "@import url('http://fonts.googleapis.com/css?family=Tangerine') (min-width: 25em);";
-		testContains(input, "(min-width: 25em)", {}, done);
+		testContains(input, "(min-width: 25em)", {}, {}, done);
 	});
 
 	describe("media query", function() {
 
 		it("contains font-family", function(done) {
 			var input = "@import url('http://fonts.googleapis.com/css?family=Tangerine') (min-width: 25em);";
-			testContains(input, "font-family: 'Tangerine'", {}, done);
+			testContains(input, "font-family: 'Tangerine'", {}, {}, done);
 		});
 
 		it("contains src local", function(done) {
 			var input = "@import url('http://fonts.googleapis.com/css?family=Tangerine') (min-width: 25em);";
-			testContains(input, "src: local('Tangerine Regular')", {}, done);
+			testContains(input, "src: local('Tangerine Regular')", {}, {}, done);
 		});
 	});
 
@@ -81,17 +81,17 @@ describe("import with media queries", function() {
 describe("skip non remote files", function() {
 
 	it("local", function(done) {
-		testEqual("@import 'a.css';", "@import 'a.css';", {}, done);
+		testEqual("@import 'a.css';", "@import 'a.css';", {}, {}, done);
 	});
 
 	it("relative parent", function(done) {
 		var input = "@import '../a.css'";
-		testEqual(input, input, {}, done);
+		testEqual(input, input, {}, {}, done);
 	});
 
 	it("relative child", function(done) {
 		var input = "@import './a/b.css'";
-		testEqual(input, input, {}, done);
+		testEqual(input, input, {}, {}, done);
 	});
 
 	// it("no protocol", function(done) {
@@ -104,27 +104,27 @@ describe("import url tangerine", function() {
 
 	it("double quotes", function(done) {
 		var input = "@import \"http://fonts.googleapis.com/css?family=Tangerine\";";
-		testEqual(input, outputTangerine, {}, done);
+		testEqual(input, outputTangerine, {}, {}, done);
 	});
 
 	it("single quotes", function(done) {
 		var input = "@import 'http://fonts.googleapis.com/css?family=Tangerine';";
-		testEqual(input, outputTangerine, {}, done);
+		testEqual(input, outputTangerine, {}, {}, done);
 	});
 
 	it("url single quotes", function(done) {
 		var input = "@import url('http://fonts.googleapis.com/css?family=Tangerine');";
-		testEqual(input, outputTangerine, {}, done);
+		testEqual(input, outputTangerine, {}, {}, done);
 	});
 
 	it("url double quotes", function(done) {
 		var input = "@import url(\"http://fonts.googleapis.com/css?family=Tangerine\");";
-		testEqual(input, outputTangerine, {}, done);
+		testEqual(input, outputTangerine, {}, {}, done);
 	});
 
 	it("url no quotes", function(done) {
 		var input = "@import url(http://fonts.googleapis.com/css?family=Tangerine);";
-		testEqual(input, outputTangerine, {}, done);
+		testEqual(input, outputTangerine, {}, {}, done);
 	});
 
 });
@@ -145,24 +145,24 @@ describe("recursive import", function() {
 
 		it("fixture-1 contains class a1", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-1/style.css)';
-			testContains(input, 'content: ".a1"', opts, done);
+			testContains(input, 'content: ".a1"', opts, {}, done);
 		});
 
 		it("fixture-1 contains class a", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-1/style.css)';
-			testContains(input, 'content: ".a"', opts, done);
+			testContains(input, 'content: ".a"', opts, {}, done);
 		});
 
 		it("fixture-1 contains class style content", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-1/style.css)';
-			testContains(input, 'content: ".style"', opts, done);
+			testContains(input, 'content: ".style"', opts, {}, done);
 		});
 
 		it("fixture-1 contains class a when passed as a string", function(done) {
 			var input = fixture1Css;
-			testContains(input, 'content: ".a"', opts, done, {
+			testContains(input, 'content: ".a"', opts, {
 				from: 'http://localhost:1234/fixture-1/style.css',
-			});
+			}, done);
 		});
 	});
 
@@ -170,27 +170,27 @@ describe("recursive import", function() {
 
 		it("fixture-2 contains class a1", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-2/style.css)';
-			testContains(input, 'content: ".a1"', opts, done);
+			testContains(input, 'content: ".a1"', opts, {}, done);
 		});
 
 		it("fixture-2 contains class a", function(done) {
 			var input = "@import url(http://localhost:1234/fixture-2/style.css)";
-			testContains(input, 'content: ".a"', opts, done);
+			testContains(input, 'content: ".a"', opts, {}, done);
 		});
 
 		it("fixture-2 contains class b1", function(done) {
 			var input = "@import url(http://localhost:1234/fixture-2/style.css)";
-			testContains(input, 'content: ".b1"', opts, done);
+			testContains(input, 'content: ".b1"', opts, {}, done);
 		});
 
 		it("fixture-2 contains class b", function(done) {
 			var input = "@import url(http://localhost:1234/fixture-2/style.css)";
-			testContains(input, 'content: ".b"', opts, done);
+			testContains(input, 'content: ".b"', opts, {}, done);
 		});
 
 		it("fixture-2 contains class style content", function(done) {
 			var input = "@import url(http://localhost:1234/fixture-2/style.css)";
-			testContains(input, 'content: ".style"', opts, done);
+			testContains(input, 'content: ".style"', opts, {}, done);
 		});
 	});
 
@@ -200,13 +200,13 @@ describe("google font woff", function() {
 
 	it("option modernBrowser should import woff", function(done) {
 		var input = "@import url(http://fonts.googleapis.com/css?family=Tangerine);";
-		testContains(input, "woff2) format('woff2')", {modernBrowser: true}, done);
+		testContains(input, "woff2) format('woff2')", {modernBrowser: true}, {}, done);
 	});
 
 	it("option agent should import woff", function(done) {
 		var input = "@import url(http://fonts.googleapis.com/css?family=Tangerine);";
 		var opts = {userAgent: 'Mozilla/5.0 AppleWebKit/537.36 Chrome/54.0.2840.99 Safari/537.36'};
-		testContains(input, "woff2) format('woff2')", opts, done);
+		testContains(input, "woff2) format('woff2')", opts, {}, done);
 	});
 
 });
