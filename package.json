@@ -14,7 +14,7 @@
     "is-url": "^1.2.1",
     "lodash.assign": "^4.0.9",
     "lodash.trim": "^4.4.0",
-    "postcss": "^5.0.2",
+    "postcss": "^6.0.13",
     "resolve-relative-url": "1.0.0"
   },
   "devDependencies": {
