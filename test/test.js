@@ -4,12 +4,7 @@ var fs = require("fs");
 var plugin = require("../");
 var tcpp = require('tcp-ping');
 
-var outputTangerine = fs.readFileSync(__dirname + "/tangerine.txt", {
-	encoding: "utf8"
-});
-var fixture1Css = fs.readFileSync(__dirname + "/fixture-1/style.css", {
-	encoding: "utf8"
-});
+var fixture1Css = fs.readFileSync(__dirname + "/fixture-1/style.css", { encoding: "utf8" });
 
 var testEqual = function(input, output, opts, postcssOptions, done) {
 	postcss([plugin(opts)]).process(input, postcssOptions).then(function(result) {
@@ -25,18 +20,13 @@ var testContains = function(input, value, opts, postcssOptions, done) {
 	postcss([plugin(opts)]).process(input, postcssOptions).then(function(result) {
 		expect(result.css).to.contain(value);
 		expect(result.warnings()).to.be.empty;
-		done();
+		done(null, result);
 	}).catch(function(error) {
 		done(error);
 	});
 };
 
 describe("import with media queries", function() {
-
-	it("empty", function(done) {
-		var input = "@import 'http://fonts.googleapis.com/css?family=Tangerine'            ;";
-		testEqual(input, outputTangerine, {}, {}, done);
-	});
 
 	it("only screen", function(done) {
 		var input = "@import 'http://fonts.googleapis.com/css?family=Tangerine' only screen and (color)";
@@ -102,29 +92,59 @@ describe("skip non remote files", function() {
 
 describe("import url tangerine", function() {
 
+	function assertOutputTangerine(result) {
+		expect(result.css).to.contain("font-family: 'Tangerine'");
+		expect(result.css).to.contain('font-style: normal');
+		expect(result.css).to.contain('font-weight: 400');
+		expect(result.css).to.contain("src: local('Tangerine Regular'), local('Tangerine-Regular'), url(http://fonts.gstatic.com/s/tangerine");
+	}
+
+	it("empty", function(done) {
+		var input = "@import 'http://fonts.googleapis.com/css?family=Tangerine'            ;";
+		testContains(input, 'Tangerine', {}, {}, function(err, result) {
+			result && assertOutputTangerine(result);
+			done(err);
+		});
+	});
+
 	it("double quotes", function(done) {
 		var input = "@import \"http://fonts.googleapis.com/css?family=Tangerine\";";
-		testEqual(input, outputTangerine, {}, {}, done);
+		testContains(input, 'Tangerine', {}, {}, function(err, result) {
+			result && assertOutputTangerine(result);
+			done(err);
+		});
 	});
 
 	it("single quotes", function(done) {
 		var input = "@import 'http://fonts.googleapis.com/css?family=Tangerine';";
-		testEqual(input, outputTangerine, {}, {}, done);
+		testContains(input, 'Tangerine', {}, {}, function(err, result) {
+			result && assertOutputTangerine(result);
+			done(err);
+		});
 	});
 
 	it("url single quotes", function(done) {
 		var input = "@import url('http://fonts.googleapis.com/css?family=Tangerine');";
-		testEqual(input, outputTangerine, {}, {}, done);
+		testContains(input, 'Tangerine', {}, {}, function(err, result) {
+			result && assertOutputTangerine(result);
+			done(err);
+		});
 	});
 
 	it("url double quotes", function(done) {
 		var input = "@import url(\"http://fonts.googleapis.com/css?family=Tangerine\");";
-		testEqual(input, outputTangerine, {}, {}, done);
+		testContains(input, 'Tangerine', {}, {}, function(err, result) {
+			result && assertOutputTangerine(result);
+			done(err);
+		});
 	});
 
 	it("url no quotes", function(done) {
 		var input = "@import url(http://fonts.googleapis.com/css?family=Tangerine);";
-		testEqual(input, outputTangerine, {}, {}, done);
+		testContains(input, 'Tangerine', {}, {}, function(err, result) {
+			result && assertOutputTangerine(result);
+			done(err);
+		});
 	});
 
 });
