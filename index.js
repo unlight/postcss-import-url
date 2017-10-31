@@ -15,6 +15,7 @@ var url = require('url');
 function postcssImportUrl(options) {
 	options = assign({}, defaults, options || {});
 	return function importUrl(tree, dummy, parentRemoteFile) {
+		parentRemoteFile = parentRemoteFile || tree.source.input.file;
 		var imports = [];
 		tree.walkAtRules("import", function checkAtRule(atRule) {
 			var params = space(atRule.params);
