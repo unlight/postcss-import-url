@@ -15,7 +15,7 @@ gulp.task("lint", function() {
 gulp.task("test", function() {
 	gulp.start("start-server");
 	return gulp.src("test/*.js", {read: false})
-		.pipe(mocha())
+		.pipe(mocha({timeout: 5000}))
 		.on("end", connect.serverClose);
 });
 

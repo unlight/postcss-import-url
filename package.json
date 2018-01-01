@@ -24,11 +24,11 @@
     "gulp": "^3.9.1",
     "gulp-connect": "^5.0.0",
     "gulp-eslint": "^4.0.0",
-    "gulp-mocha": "^4.3.1",
+    "gulp-mocha": "^5.0.0",
     "tcp-ping": "^0.1.1"
   },
   "scripts": {
-    "pretest": "npm install postcss",
+    "pretest": "npm install postcss --no-package-lock --no-save",
     "test": "gulp"
   },
   "main": "index.js",
