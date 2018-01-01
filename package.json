@@ -17,7 +17,7 @@
     "resolve-relative-url": "^1.0.0"
   },
   "peerDependencies": {
-    "postcss": "^6.0.13"
+    "postcss": ">= 6"
   },
   "devDependencies": {
     "chai": "^4.1.2",
@@ -25,6 +25,7 @@
     "gulp-connect": "^5.0.0",
     "gulp-eslint": "^4.0.0",
     "gulp-mocha": "^4.3.1",
+    "postcss": "^6.0.14",
     "tcp-ping": "^0.1.1"
   },
   "scripts": {
