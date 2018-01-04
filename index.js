@@ -60,6 +60,7 @@ function cleanupRemoteFile(value) {
 function createPromise(remoteFile, options) {
 	var reqOptions = url.parse(remoteFile);
 	reqOptions.headers = {};
+	reqOptions.headers['connection'] = 'keep-alive';
 	if (options.modernBrowser) {
 		reqOptions.headers['user-agent'] = 'Mozilla/5.0 AppleWebKit/538.0 Chrome/54.0 Safari/538';
 	}
