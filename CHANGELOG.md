@@ -1,3 +1,20 @@
+# [4.0.0](https://github.com/unlight/postcss-import-url/compare/v3.0.4...v4.0.0) (2019-01-03)
+
+
+### chore
+
+* Updated dependencies ([b1ed8b2](https://github.com/unlight/postcss-import-url/commit/b1ed8b2))
+
+
+### Features
+
+* Added semantic release ([69c494a](https://github.com/unlight/postcss-import-url/commit/69c494a))
+
+
+### BREAKING CHANGES
+
+* Node 6+ is required now
+
 ## 3.X.X
 
 * 3.0.4 (04 Jan 2018) - fixed [#15](https://github.com/unlight/postcss-import-url/issues/15)

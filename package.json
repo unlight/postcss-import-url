@@ -1,6 +1,6 @@
 {
   "name": "postcss-import-url",
-  "version": "0.0.0-dev",
+  "version": "4.0.0",
   "description": "PostCSS plugin inlines remote files.",
   "keywords": [
     "postcss",
