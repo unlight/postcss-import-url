@@ -5,5 +5,3 @@ test/
 gulpfile.js
 .eslintrc
 ~*
-/.postcss-import-url.sublime-project
-/.postcss-import-url.sublime-workspace

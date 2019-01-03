@@ -1,6 +1,6 @@
 {
   "name": "postcss-import-url",
-  "version": "3.0.4",
+  "version": "0.0.0-dev",
   "description": "PostCSS plugin inlines remote files.",
   "keywords": [
     "postcss",
@@ -9,6 +9,10 @@
   ],
   "license": "MIT",
   "homepage": "https://github.com/unlight/postcss-import-url",
+  "engines": {
+    "node": ">=6",
+    "npm": ">=3"
+  },
   "dependencies": {
     "http-https": "^1.0.0",
     "is-url": "^1.2.2",
@@ -22,13 +26,18 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "gulp": "^3.9.1",
+    "@semantic-release/changelog": "^3.0.1",
+    "@semantic-release/git": "^7.0.5",
+    "@semantic-release/npm": "^5.1.2",
+    "semantic-release": "^15.13.1",
     "gulp-connect": "^5.0.0",
     "gulp-eslint": "^4.0.0",
     "gulp-mocha": "^5.0.0",
     "tcp-ping": "^0.1.1"
   },
   "scripts": {
-    "pretest": "npm install postcss --no-package-lock --no-save",
+    "prepublishOnly": "sed -i -e 's/devDependencies/_devDependencies/g' package.json",
+    "pretest": "npm install postcss@7 --no-package-lock --no-save",
     "test": "gulp"
   },
   "main": "index.js",
@@ -41,5 +50,33 @@
   },
   "bugs": {
     "url": "https://github.com/unlight/postcss-import-url/issues"
+  },
+  "release": {
+    "verifyConditions": [
+      "@semantic-release/changelog",
+      "@semantic-release/github",
+      "@semantic-release/npm",
+      "@semantic-release/git"
+    ],
+    "prepare": [
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/git"
+    ],
+    "publish": [
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ],
+    "success": [
+      "@semantic-release/github"
+    ],
+    "fail": [
+      "@semantic-release/github"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   }
 }
