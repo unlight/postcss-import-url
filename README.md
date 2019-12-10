@@ -3,7 +3,7 @@
 
 ```css
 /* Input example */
-@import "http://fonts.googleapis.com/css?family=Tangerine";
+@import "https://fonts.googleapis.com/css?family=Tangerine";
 body {
 	font-size: 13px;
 }
@@ -15,7 +15,7 @@ body {
     font-family: 'Tangerine';
     font-style: normal;
     font-weight: 400;
-    src: local('Tangerine'), url(http://fonts.gstatic.com/s/tangerine/v7/HGfsyCL5WASpHOFnouG-RKCWcynf_cDxXwCLxiixG1c.ttf) format('truetype')
+    src: local('Tangerine'), url(https://fonts.gstatic.com/s/tangerine/v7/HGfsyCL5WASpHOFnouG-RKCWcynf_cDxXwCLxiixG1c.ttf) format('truetype')
 }
 body {
 	font-size: 13px;
@@ -29,7 +29,7 @@ var options = {};
 postcss([importUrl(options)])
     .process(css, {
         // Define a `from` option to resolve relative @imports in the initial css to a url.
-        from: 'http://example.com/styles.css',
+        from: 'https://example.com/styles.css',
     });
 ```
 
