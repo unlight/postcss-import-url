@@ -11,6 +11,7 @@ var defaults = {
 };
 var space = postcss.list.space;
 var url = require('url');
+var urlRegexp = /url\(["'].+?['"]\)/;
 
 function postcssImportUrl(options) {
 	options = assign({}, defaults, options || {});
@@ -35,6 +36,12 @@ function postcssImportUrl(options) {
 					mediaNode.append(newNode);
 					newNode = mediaNode;
 				}
+
+				// Convert relative paths to absolute paths
+				newNode = newNode.replaceValues(urlRegexp, { fast: 'url(' }, function(url) {
+					return resolveUrls(url, remoteFile);
+				});
+
 				var p = (options.recursive) ? importUrl(newNode, null, r.parent) : Promise.resolve(newNode);
 				return p.then(function(tree) {
 					atRule.replaceWith(tree);
@@ -55,6 +62,10 @@ function cleanupRemoteFile(value) {
 	}
 	value = trim(value, "'\"()");
 	return value;
+}
+
+function resolveUrls(to, from) {
+	return 'url("' + resolveRelative(cleanupRemoteFile(to), from) + '")';
 }
 
 function createPromise(remoteFile, options) {
