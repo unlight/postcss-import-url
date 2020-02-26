@@ -10,7 +10,7 @@
   "license": "MIT",
   "homepage": "https://github.com/unlight/postcss-import-url",
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "dependencies": {
     "http-https": "^1.0.0",
