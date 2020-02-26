@@ -37,6 +37,8 @@
     "tcp-ping": "^0.1.1"
   },
   "scripts": {
+    "eslint": "node node_modules/eslint/bin/eslint index.js",
+    "eslint:fix": "npm run eslint -- --fix",
     "test": "gulp"
   },
   "main": "index.js",
@@ -52,9 +54,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "precise-commits",
-      "pre-push": "npm run test",
-      "commit-msg": "git-branch-is -r \"^(release|master|develop)\" && commitlint -E HUSKY_GIT_PARAMS || echo \"Ignoring commitlint error...\""
+      "pre-commit": "precise-commits"
     }
   }
 }
