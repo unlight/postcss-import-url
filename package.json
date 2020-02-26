@@ -10,8 +10,7 @@
   "license": "MIT",
   "homepage": "https://github.com/unlight/postcss-import-url",
   "engines": {
-    "node": ">=6",
-    "npm": ">=3"
+    "node": ">=8"
   },
   "dependencies": {
     "http-https": "^1.0.0",
@@ -24,20 +23,20 @@
     "postcss": ">=6 <8"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^5.0.0",
+    "@semantic-release/git": "^9.0.0",
     "chai": "^4.2.0",
-    "gulp": "^4.0.0",
-    "@semantic-release/changelog": "^3.0.2",
-    "@semantic-release/git": "^7.0.7",
-    "@semantic-release/npm": "^5.1.3",
-    "semantic-release": "^15.13.2",
+    "gulp": "^4.0.2",
     "gulp-connect": "^5.7.0",
-    "gulp-eslint": "^5.0.0",
-    "gulp-mocha": "^6.0.0",
+    "gulp-eslint": "^6.0.0",
+    "gulp-mocha": "^7.0.2",
+    "husky": "^4.2.3",
+    "precise-commits": "^1.0.2",
+    "prettier": "^1.19.1",
+    "semantic-release": "^17.0.4",
     "tcp-ping": "^0.1.1"
   },
   "scripts": {
-    "prepublishOnly": "sed -i -e 's/devDependencies/_devDependencies/g' package.json",
-    "pretest": "npm install postcss@7 --no-package-lock --no-save",
     "test": "gulp"
   },
   "main": "index.js",
@@ -51,32 +50,11 @@
   "bugs": {
     "url": "https://github.com/unlight/postcss-import-url/issues"
   },
-  "release": {
-    "verifyConditions": [
-      "@semantic-release/changelog",
-      "@semantic-release/github",
-      "@semantic-release/npm",
-      "@semantic-release/git"
-    ],
-    "prepare": [
-      "@semantic-release/changelog",
-      "@semantic-release/npm",
-      "@semantic-release/git"
-    ],
-    "publish": [
-      "@semantic-release/npm",
-      "@semantic-release/github"
-    ],
-    "success": [
-      "@semantic-release/github"
-    ],
-    "fail": [
-      "@semantic-release/github"
-    ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
+  "husky": {
+    "hooks": {
+      "pre-commit": "precise-commits",
+      "pre-push": "npm run test",
+      "commit-msg": "git-branch-is -r \"^(release|master|develop)\" && commitlint -E HUSKY_GIT_PARAMS || echo \"Ignoring commitlint error...\""
     }
   }
 }
