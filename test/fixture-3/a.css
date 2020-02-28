@@ -1,7 +1,7 @@
 @import './recursive/b.css';
 
 @font-face {
-	src: url('./font.woff');
+	src: url("./font.woff");
 }
 .implicit-sibling {
 	background-image: url("implicit-sibling.png");

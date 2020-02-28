@@ -37,7 +37,8 @@ See [PostCSS](https://github.com/postcss/postcss#usage) docs for examples for yo
 
 ## Options
 * `recursive` (boolean) To import URLs recursively (default: `true`)
-* `modernBrowser` (boolean) set user-agent string to 'Mozilla/5.0 AppleWebKit/537.36 Chrome/65.0.0.0 Safari/537.36', this option maybe useful for importing fonts from Google. Google check `user-agent` header string and respond can be different (default: `false`)
+* `resolveUrls` (boolean) To transform relative URLs found in remote stylesheets into fully qualified URLs ([see #18](https://github.com/unlight/postcss-import-url/pull/18)) (default: `false`)
+* `modernBrowser` (boolean) Set user-agent string to 'Mozilla/5.0 AppleWebKit/537.36 Chrome/65.0.0.0 Safari/537.36', this option maybe useful for importing fonts from Google. Google check `user-agent` header string and respond can be different (default: `false`)
 * `userAgent` (string) Custom user-agent header (default: `null`)
 
 ## Known Issues

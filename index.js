@@ -6,6 +6,7 @@ var resolveRelative = require("resolve-relative-url");
 var assign = require("lodash.assign");
 var defaults = {
 	recursive: true,
+	resolveURLs: false,
 	modernBrowser: false,
 	userAgent: null
 };
@@ -37,10 +38,12 @@ function postcssImportUrl(options) {
 					newNode = mediaNode;
 				}
 
-				// Convert relative paths to absolute paths
-				newNode = newNode.replaceValues(urlRegexp, { fast: 'url(' }, function(url) {
-					return resolveUrls(url, remoteFile);
-				});
+				if (options.resolveUrls) {
+					// Convert relative paths to absolute paths
+					newNode = newNode.replaceValues(urlRegexp, { fast: 'url(' }, function(url) {
+						return resolveUrls(url, remoteFile);
+					});
+				}
 
 				var p = (options.recursive) ? importUrl(newNode, null, r.parent) : Promise.resolve(newNode);
 				return p.then(function(tree) {

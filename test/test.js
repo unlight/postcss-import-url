@@ -216,50 +216,69 @@ describe("recursive import", function() {
 
 	describe("fixture-3 convert relative paths in property values", function() {
 
+		it("does not resolve relative URLs by default", function(done) {
+			var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+			testContains(input, 'src: url("./font.woff");', {}, {}, done);
+		});
+
+		it("does not resolve relative URLs when option.resolveURLs is false", function(done) {
+			var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+			testContains(input, 'src: url("./font.woff");', { resolveUrls: false }, {}, done);
+		});
+
+		var _opts = { resolveUrls: true };
+
+		it("resolves relative URLs when option.resolveURLs is true", function(done) {
+			var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+			testContains(input, 'src: url("http://localhost:1234/fixture-3/font.woff");', _opts, {}, done);
+		});
+
 		it("does not modify absolute paths", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-3/style.css)';
-			testContains(input, 'background-image: url("http://example.com/absolute.png");', opts, {}, done);
+			testContains(input, 'background-image: url("http://example.com/absolute.png");', _opts, {}, done);
 		});
 
 		it("makes root relative paths absolute", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-3/style.css)';
-			testContains(input, 'background-image: url("http://localhost:1234/root-relative.png")', opts, {}, done);
+			testContains(input, 'background-image: url("http://localhost:1234/root-relative.png")', _opts, {}, done);
 		});
 
 		it("makes implicit sibling paths absolute", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-3/style.css)';
-			testContains(input, 'background-image: url("http://localhost:1234/fixture-3/implicit-sibling.png")', opts, {}, done);
+			testContains(input, 'background-image: url("http://localhost:1234/fixture-3/implicit-sibling.png")', _opts, {}, done);
 		});
 
 		it("makes relative sibling paths absolute", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-3/style.css)';
-			testContains(input, 'background-image: url("http://localhost:1234/fixture-3/sibling.png")', opts, {}, done);
+			testContains(input, 'background-image: url("http://localhost:1234/fixture-3/sibling.png")', _opts, {}, done);
 		});
 
 		it("makes parent relative paths absolute", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-3/style.css)';
-			testContains(input, 'background-image: url("http://localhost:1234/parent.png")', opts, {}, done);
+			testContains(input, 'background-image: url("http://localhost:1234/parent.png")', _opts, {}, done);
 		});
 
 		it("makes grandparent relative paths absolute", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-3/style.css)';
-			testContains(input, 'background-image: url("http://localhost:1234/grandparent.png")', opts, {}, done);
+			testContains(input, 'background-image: url("http://localhost:1234/grandparent.png")', _opts, {}, done);
 		});
+
+		var _optsRecursive = { resolveUrls: true, recursive: true };
 
 		// Test paths are resolved for recursively imported stylesheets
 		it("makes relative sibling paths absolute - recursive", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-3/style.css)';
-			testContains(input, 'background-image: url("http://localhost:1234/fixture-3/recursive/sibling-recursive.png")', opts, {}, done);
+			testContains(input, 'background-image: url("http://localhost:1234/fixture-3/recursive/sibling-recursive.png")', _optsRecursive, {}, done);
 		});
 
 		it("makes parent relative paths absolute - recursive", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-3/style.css)';
-			testContains(input, 'background-image: url("http://localhost:1234/fixture-3/parent-recursive.png")', opts, {}, done);
+			testContains(input, 'background-image: url("http://localhost:1234/fixture-3/parent-recursive.png")', _optsRecursive, {}, done);
 		});
 
 		it("makes grandparent relative paths absolute - recursive", function(done) {
 			var input = '@import url(http://localhost:1234/fixture-3/style.css)';
-			testContains(input, 'background-image: url("http://localhost:1234/grandparent-recursive.png")', opts, {}, done);
+			testContains(input, 'background-image: url("http://localhost:1234/grandparent-recursive.png")', _optsRecursive, {}, done);
 		});
 
 	});
