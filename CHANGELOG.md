@@ -1,3 +1,20 @@
+# [5.0.0](https://github.com/unlight/postcss-import-url/compare/v4.0.0...v5.0.0) (2020-03-01)
+
+
+### chore
+
+* Added development stuff (prettier, eslint, etc.) ([70e5497](https://github.com/unlight/postcss-import-url/commit/70e5497a750dd7e7935ed4f08fde76f30b69b955))
+
+
+### Features
+
+* Resolve relative URLs in property values ([c11c03d](https://github.com/unlight/postcss-import-url/commit/c11c03d10f8d5016d4cec811f40fed6f6140e6f1))
+
+
+### BREAKING CHANGES
+
+* Node 10+ is required
+
 # [4.0.0](https://github.com/unlight/postcss-import-url/compare/v3.0.4...v4.0.0) (2019-01-03)
 
 
