@@ -1,24 +1,23 @@
 @import './recursive/b.css';
 
 @font-face {
-	src: url("./font.woff");
+    src: url('./font.woff');
 }
 .implicit-sibling {
-	background-image: url("implicit-sibling.png");
+    background-image: url('implicit-sibling.png');
 }
 .absolute {
-	background-image: url("http://example.com/absolute.png");
+    background-image: url('http://example.com/absolute.png');
 }
 .root-relative {
-	background-image: url("/root-relative.png");
+    background-image: url('/root-relative.png');
 }
 .sibling {
-	background-image: url("./sibling.png");
+    background-image: url('./sibling.png');
 }
 .parent {
-	background-image: url("../parent.png");
+    background-image: url('../parent.png');
 }
 .grandparent {
-	background-image: url("../../grandparent.png");
+    background-image: url('../../grandparent.png');
 }
-

@@ -1,19 +1,19 @@
 @font-face {
-	src: url("../font-recursive.woff");
+    src: url('../font-recursive.woff');
 }
 
 .sibling-recursive {
-	background-image: url("./sibling-recursive.png");
+    background-image: url('./sibling-recursive.png');
 }
 
 .parent-recursive {
-	background-image: url("../parent-recursive.png");
+    background-image: url('../parent-recursive.png');
 }
 
 .grandparent-recursive {
-	background-image: url("../../grandparent-recursive.png");
+    background-image: url('../../grandparent-recursive.png');
 }
 
 .absolute-recursive {
-	background-image: url("http://example.com/absolute-recursive.png");
+    background-image: url('http://example.com/absolute-recursive.png');
 }
