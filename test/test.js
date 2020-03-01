@@ -92,10 +92,10 @@ describe('skip non remote files', function() {
         testEqual(input, input, {}, {}, done);
     });
 
-    // it("no protocol", function(done) {
-    // 	var input = "@import url(//example.com/a.css)";
-    // 	test(input, input, {}, done);
-    // });
+    it.skip('no protocol', function(done) {
+        var input = '@import url(//example.com/a.css)';
+        test(input, input, {}, done);
+    });
 });
 
 describe('import url tangerine', function() {
@@ -171,24 +171,24 @@ describe('recursive import', function() {
     describe('fixture-1', function() {
         it('fixture-1 contains class a1', function(done) {
             var input = '@import url(http://localhost:1234/fixture-1/style.css)';
-            testContains(input, 'content: ".a1"', opts, {}, done);
+            testContains(input, '.a1', opts, {}, done);
         });
 
         it('fixture-1 contains class a', function(done) {
             var input = '@import url(http://localhost:1234/fixture-1/style.css)';
-            testContains(input, 'content: ".a"', opts, {}, done);
+            testContains(input, "content: '.a'", opts, {}, done);
         });
 
         it('fixture-1 contains class style content', function(done) {
             var input = '@import url(http://localhost:1234/fixture-1/style.css)';
-            testContains(input, 'content: ".style"', opts, {}, done);
+            testContains(input, "content: '.style'", opts, {}, done);
         });
 
         it('fixture-1 contains class a when passed as a string', function(done) {
             var input = fixture1Css;
             testContains(
                 input,
-                'content: ".a"',
+                "content: '.a'",
                 opts,
                 {
                     from: 'http://localhost:1234/fixture-1/style.css',
@@ -201,39 +201,39 @@ describe('recursive import', function() {
     describe('fixture-2', function() {
         it('fixture-2 contains class a1', function(done) {
             var input = '@import url(http://localhost:1234/fixture-2/style.css)';
-            testContains(input, 'content: ".a1"', opts, {}, done);
+            testContains(input, "content: '.a1'", opts, {}, done);
         });
 
         it('fixture-2 contains class a', function(done) {
             var input = '@import url(http://localhost:1234/fixture-2/style.css)';
-            testContains(input, 'content: ".a"', opts, {}, done);
+            testContains(input, "content: '.a'", opts, {}, done);
         });
 
         it('fixture-2 contains class b1', function(done) {
             var input = '@import url(http://localhost:1234/fixture-2/style.css)';
-            testContains(input, 'content: ".b1"', opts, {}, done);
+            testContains(input, "content: '.b1'", opts, {}, done);
         });
 
         it('fixture-2 contains class b', function(done) {
             var input = '@import url(http://localhost:1234/fixture-2/style.css)';
-            testContains(input, 'content: ".b"', opts, {}, done);
+            testContains(input, "content: '.b'", opts, {}, done);
         });
 
         it('fixture-2 contains class style content', function(done) {
             var input = '@import url(http://localhost:1234/fixture-2/style.css)';
-            testContains(input, 'content: ".style"', opts, {}, done);
+            testContains(input, "content: '.style'", opts, {}, done);
         });
     });
 
     describe('fixture-3 convert relative paths in property values', function() {
         it('does not resolve relative URLs by default', function(done) {
             var input = '@import url(http://localhost:1234/fixture-3/style.css)';
-            testContains(input, 'src: url("./font.woff");', {}, {}, done);
+            testContains(input, "src: url('./font.woff');", {}, {}, done);
         });
 
         it('does not resolve relative URLs when option.resolveURLs is false', function(done) {
             var input = '@import url(http://localhost:1234/fixture-3/style.css)';
-            testContains(input, 'src: url("./font.woff");', { resolveUrls: false }, {}, done);
+            testContains(input, "src: url('./font.woff');", { resolveUrls: false }, {}, done);
         });
 
         var _opts = { resolveUrls: true };
