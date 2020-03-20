@@ -12,7 +12,7 @@ var defaults = {
 };
 var space = postcss.list.space;
 var url = require('url');
-var urlRegexp = /url\(["']?.+?['"]?\)/;
+var urlRegexp = /url\(["']?.+?['"]?\)/g;
 
 function postcssImportUrl(options) {
     options = assign({}, defaults, options || {});
