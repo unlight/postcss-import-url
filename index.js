@@ -6,13 +6,13 @@ var resolveRelative = require('resolve-relative-url');
 var assign = require('lodash.assign');
 var defaults = {
     recursive: true,
-    resolveURLs: false,
+    resolveUrls: false,
     modernBrowser: false,
     userAgent: null,
 };
 var space = postcss.list.space;
 var url = require('url');
-var urlRegexp = /url\(["'].+?['"]\)/;
+var urlRegexp = /url\(["']?.+?['"]?\)/;
 
 function postcssImportUrl(options) {
     options = assign({}, defaults, options || {});
