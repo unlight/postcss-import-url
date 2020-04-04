@@ -1,3 +1,10 @@
+# [5.1.0](https://github.com/unlight/postcss-import-url/compare/v5.0.0...v5.1.0) (2020-04-04)
+
+
+### Features
+
+* supports multiple url resolves ([4997931](https://github.com/unlight/postcss-import-url/commit/4997931bf216c8b740fae7518c13cb457e840053))
+
 # [5.0.0](https://github.com/unlight/postcss-import-url/compare/v4.0.0...v5.0.0) (2020-03-01)
 
 
