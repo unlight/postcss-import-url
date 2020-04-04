@@ -26,7 +26,7 @@ function postcssImportUrl(options) {
                 remoteFile = resolveRelative(remoteFile, parentRemoteFile);
             }
             if (!isUrl(remoteFile)) return;
-            imports[imports.length] = createPromise(remoteFile, options).then(function(r) {
+            imports[imports.length] = createPromise(remoteFile, options).then(function (r) {
                 var newNode = postcss.parse(r.body);
                 var mediaQueries = params.slice(1).join(' ');
                 if (mediaQueries) {
@@ -40,7 +40,7 @@ function postcssImportUrl(options) {
 
                 if (options.resolveUrls) {
                     // Convert relative paths to absolute paths
-                    newNode = newNode.replaceValues(urlRegexp, { fast: 'url(' }, function(url) {
+                    newNode = newNode.replaceValues(urlRegexp, { fast: 'url(' }, function (url) {
                         return resolveUrls(url, remoteFile);
                     });
                 }
@@ -48,12 +48,12 @@ function postcssImportUrl(options) {
                 var p = options.recursive
                     ? importUrl(newNode, null, r.parent)
                     : Promise.resolve(newNode);
-                return p.then(function(tree) {
+                return p.then(function (tree) {
                     atRule.replaceWith(tree);
                 });
             });
         });
-        return Promise.all(imports).then(function() {
+        return Promise.all(imports).then(function () {
             return tree;
         });
     };
@@ -85,12 +85,12 @@ function createPromise(remoteFile, options) {
         reqOptions.headers['user-agent'] = String(options.userAgent);
     }
     function executor(resolve, reject) {
-        var request = hh.get(reqOptions, function(response) {
+        var request = hh.get(reqOptions, function (response) {
             var body = '';
-            response.on('data', function(chunk) {
+            response.on('data', function (chunk) {
                 body += chunk.toString();
             });
-            response.on('end', function() {
+            response.on('end', function () {
                 resolve({
                     body: body,
                     parent: remoteFile,
