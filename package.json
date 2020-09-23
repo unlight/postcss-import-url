@@ -13,10 +13,10 @@
     "node": ">=10"
   },
   "dependencies": {
-    "http-https": "^1.0.0",
     "is-url": "^1.2.4",
     "lodash.assign": "^4.2.0",
     "lodash.trim": "^4.5.1",
+    "request": "^2.88.2",
     "resolve-relative-url": "^1.0.0"
   },
   "peerDependencies": {
