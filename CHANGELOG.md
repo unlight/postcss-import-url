@@ -1,3 +1,15 @@
+# [6.0.0](https://github.com/unlight/postcss-import-url/compare/v5.1.0...v6.0.0) (2020-12-09)
+
+
+### Features
+
+* Support PostCSS v8 ([2d17367](https://github.com/unlight/postcss-import-url/commit/2d173670da93ab88a428ade3a05a792f79503b7e))
+
+
+### BREAKING CHANGES
+
+* Support PostCSS v8
+
 # [5.1.0](https://github.com/unlight/postcss-import-url/compare/v5.0.0...v5.1.0) (2020-04-04)
 
 
