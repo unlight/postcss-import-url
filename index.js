@@ -16,7 +16,8 @@ var urlRegexp = /url\(["']?.+?['"]?\)/g;
 
 function postcssImportUrl(options) {
     options = assign({}, defaults, options || {});
-    return function importUrl(tree, dummy, parentRemoteFile) {
+
+    function importUrl(tree, dummy, parentRemoteFile) {
         parentRemoteFile = parentRemoteFile || tree.source.input.file;
         var imports = [];
         tree.walkAtRules('import', function checkAtRule(atRule) {
@@ -56,10 +57,16 @@ function postcssImportUrl(options) {
         return Promise.all(imports).then(function () {
             return tree;
         });
+    }
+
+    return {
+        postcssPlugin: 'postcss-import-url',
+        Once: importUrl,
     };
 }
 
-module.exports = postcss.plugin('postcss-import-url', postcssImportUrl);
+module.exports = postcssImportUrl;
+module.exports.postcss = true;
 
 function cleanupRemoteFile(value) {
     if (value.substr(0, 3) === 'url') {
