@@ -30,7 +30,7 @@ async function getResult(input, pluginOptions, postcssOptions) {
 }
 
 describe('import with media queries', function () {
-    it('only screen', async function () {
+    it('only screen', async () => {
         const input =
             "@import 'http://fonts.googleapis.com/css?family=Tangerine' only screen and (color)";
         const result = await getResult(input);
