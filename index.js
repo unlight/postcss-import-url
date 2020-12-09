@@ -86,7 +86,7 @@ function createPromise(remoteFile, options) {
     reqOptions.headers['connection'] = 'keep-alive';
     if (options.modernBrowser) {
         reqOptions.headers['user-agent'] =
-            'Mozilla/5.0 AppleWebKit/538.0 Chrome/65.0.0.0 Safari/538';
+            'Mozilla/5.0 AppleWebKit/538.0 Chrome/80.0.0.0 Safari/538';
     }
     if (options.userAgent) {
         reqOptions.headers['user-agent'] = String(options.userAgent);

@@ -1,0 +1,14 @@
+#!/bin/bash
+PATH="$PWD/node_modules/.bin":$PATH
+set -e
+
+build_cp() {
+    set -x
+    rm -rfv dist
+    mkdir dist
+    cp -rfv index.js dist
+    cp -fv README.md LICENSE package.json dist
+    set +x
+}
+
+"$@"

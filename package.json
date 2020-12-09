@@ -2,6 +2,7 @@
   "name": "postcss-import-url",
   "version": "5.1.0",
   "description": "PostCSS plugin inlines remote files.",
+  "main": "index.js",
   "keywords": [
     "postcss",
     "css",
@@ -11,6 +12,13 @@
   "homepage": "https://github.com/unlight/postcss-import-url",
   "engines": {
     "node": ">=10"
+  },
+  "scripts": {
+    "build": "sh Taskfile build_cp",
+    "eslint": "node node_modules/eslint/bin/eslint index.js",
+    "eslint:fix": "npm run eslint -- --fix",
+    "test": "gulp",
+    "test:w": "gulp test:w"
   },
   "dependencies": {
     "http-https": "^1.0.0",
@@ -25,24 +33,18 @@
   "devDependencies": {
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/git": "^9.0.0",
-    "chai": "^4.2.0",
+    "expect": "^26.6.2",
     "gulp": "^4.0.2",
     "gulp-connect": "^5.7.0",
     "gulp-eslint": "^6.0.0",
     "gulp-mocha": "^7.0.2",
-    "husky": "^4.2.3",
+    "husky": "^4.3.5",
     "postcss": "^8.2.0",
     "precise-commits": "^1.0.2",
-    "prettier": "^2.0.2",
-    "semantic-release": "^17.0.4",
+    "prettier": "^2.2.1",
+    "semantic-release": "^17.3.0",
     "tcp-ping": "^0.1.1"
   },
-  "scripts": {
-    "eslint": "node node_modules/eslint/bin/eslint index.js",
-    "eslint:fix": "npm run eslint -- --fix",
-    "test": "gulp"
-  },
-  "main": "index.js",
   "directories": {
     "test": "test"
   },

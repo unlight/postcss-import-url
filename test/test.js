@@ -1,78 +1,77 @@
-var postcss = require('postcss');
-var expect = require('chai').expect;
-var fs = require('fs');
-var plugin = require('../');
-var tcpp = require('tcp-ping');
+const postcss = require('postcss');
+const expect = require('expect');
+const fs = require('fs');
+const plugin = require('../');
+const tcpp = require('tcp-ping');
 
-var fixture1Css = fs.readFileSync(__dirname + '/fixture-1/style.css', { encoding: 'utf8' });
+const fixture1Css = fs.readFileSync(__dirname + '/fixture-1/style.css', { encoding: 'utf8' });
 
-var testEqual = function (input, output, opts, postcssOptions, done) {
-    postcss([plugin(opts)])
-        .process(input, postcssOptions)
-        .then(function (result) {
-            expect(result.css.trim()).to.eql(output.trim());
-            expect(result.warnings()).to.be.empty;
-            done();
-        })
-        .catch(function (error) {
-            done(error);
-        });
+const testEqual = function (input, output, pluginOptions, postcssOptions, done) {
+    getResult(input, pluginOptions, postcssOptions).then((result) => {
+        expect(result.css.trim()).toEqual(output.trim());
+        expect(result.warnings()).toHaveLength(0);
+        done();
+    }, done);
 };
 
-var testContains = function (input, value, opts, postcssOptions, done) {
-    postcss([plugin(opts)])
-        .process(input, postcssOptions)
-        .then(function (result) {
-            expect(result.css).to.contain(value);
-            expect(result.warnings()).to.be.empty;
-            done(null, result);
-        })
-        .catch(function (error) {
-            done(error);
-        });
+const testContains = function (input, value, pluginOptions, postcssOptions, done) {
+    getResult(input, pluginOptions, postcssOptions).then((result) => {
+        expect(result.css).toContain(value);
+        expect(result.warnings()).toHaveLength(0);
+        done();
+    }, done);
 };
+
+async function getResult(input, pluginOptions, postcssOptions) {
+    return postcss([plugin(pluginOptions)]).process(input, {
+        from: undefined,
+        ...postcssOptions,
+    });
+}
 
 describe('import with media queries', function () {
-    it('only screen', function (done) {
-        var input =
+    it('only screen', async function () {
+        const input =
             "@import 'http://fonts.googleapis.com/css?family=Tangerine' only screen and (color)";
-        testContains(input, '@media only screen and (color)', {}, {}, done);
+        const result = await getResult(input);
+        expect(result.css).toContain('@media only screen and (color)');
     });
 
     it('rule with and', function (done) {
-        var input =
+        const input =
             "@import 'http://fonts.googleapis.com/css?family=Tangerine' screen and (orientation:landscape)";
         testContains(input, '@media screen and (orientation:landscape)', {}, {}, done);
     });
 
     it('rule projection, tv', function (done) {
-        var input =
+        const input =
             "@import url('http://fonts.googleapis.com/css?family=Tangerine') projection, tv";
         testContains(input, '@media projection, tv', {}, {}, done);
     });
 
     it('rule print', function (done) {
-        var input = "@import url('http://fonts.googleapis.com/css?family=Tangerine') print";
+        const input = "@import url('http://fonts.googleapis.com/css?family=Tangerine') print";
         testContains(input, '@media print', {}, {}, done);
     });
 
     it('contains it', function (done) {
-        var input =
+        const input =
             "@import url('http://fonts.googleapis.com/css?family=Tangerine') (min-width: 25em);";
         testContains(input, '(min-width: 25em)', {}, {}, done);
     });
 
     describe('media query', function () {
         it('contains font-family', function (done) {
-            var input =
+            const input =
                 "@import url('http://fonts.googleapis.com/css?family=Tangerine') (min-width: 25em);";
             testContains(input, "font-family: 'Tangerine'", {}, {}, done);
         });
 
-        it('contains src local', function (done) {
-            var input =
+        it('contains src local', async () => {
+            const input =
                 "@import url('http://fonts.googleapis.com/css?family=Tangerine') (min-width: 25em);";
-            testContains(input, "src: local('Tangerine Regular')", {}, {}, done);
+            const result = await getResult(input);
+            expect(result.css).toContain('@media (min-width: 25em) {@font-face');
         });
     });
 });
@@ -83,77 +82,63 @@ describe('skip non remote files', function () {
     });
 
     it('relative parent', function (done) {
-        var input = "@import '../a.css'";
+        const input = "@import '../a.css'";
         testEqual(input, input, {}, {}, done);
     });
 
     it('relative child', function (done) {
-        var input = "@import './a/b.css'";
+        const input = "@import './a/b.css'";
         testEqual(input, input, {}, {}, done);
     });
 
-    it.skip('no protocol', function (done) {
-        var input = '@import url(//example.com/a.css)';
-        test(input, input, {}, done);
+    it.skip('no protocol', async () => {
+        const input = '@import url(//example.com/a.css)';
+        const result = await getResult(input);
     });
 });
 
 describe('import url tangerine', function () {
     function assertOutputTangerine(result) {
-        expect(result.css).to.contain("font-family: 'Tangerine'");
-        expect(result.css).to.contain('font-style: normal');
-        expect(result.css).to.contain('font-weight: 400');
-        expect(result.css).to.contain(
-            "src: local('Tangerine Regular'), local('Tangerine-Regular'), url(http://fonts.gstatic.com/s/tangerine",
-        );
+        expect(result.css).toContain("font-family: 'Tangerine'");
+        expect(result.css).toContain('font-style: normal');
+        expect(result.css).toContain('font-weight: 400');
+        expect(result.css).toContain('fonts.gstatic.com/s/tangerine');
     }
 
-    it('empty', function (done) {
-        var input = "@import 'http://fonts.googleapis.com/css?family=Tangerine'            ;";
-        testContains(input, 'Tangerine', {}, {}, function (err, result) {
-            result && assertOutputTangerine(result);
-            done(err);
-        });
+    it('empty', async () => {
+        const input = "@import 'http://fonts.googleapis.com/css?family=Tangerine'            ;";
+        const result = await getResult(input);
+        assertOutputTangerine(result);
     });
 
-    it('double quotes', function (done) {
-        var input = '@import "http://fonts.googleapis.com/css?family=Tangerine";';
-        testContains(input, 'Tangerine', {}, {}, function (err, result) {
-            result && assertOutputTangerine(result);
-            done(err);
-        });
+    it('double quotes', async () => {
+        const input = '@import "http://fonts.googleapis.com/css?family=Tangerine";';
+        const result = await getResult(input);
+        assertOutputTangerine(result);
     });
 
-    it('single quotes', function (done) {
-        var input = "@import 'http://fonts.googleapis.com/css?family=Tangerine';";
-        testContains(input, 'Tangerine', {}, {}, function (err, result) {
-            result && assertOutputTangerine(result);
-            done(err);
-        });
+    it('single quotes', async () => {
+        const input = "@import 'http://fonts.googleapis.com/css?family=Tangerine';";
+        const result = await getResult(input);
+        assertOutputTangerine(result);
     });
 
-    it('url single quotes', function (done) {
-        var input = "@import url('http://fonts.googleapis.com/css?family=Tangerine');";
-        testContains(input, 'Tangerine', {}, {}, function (err, result) {
-            result && assertOutputTangerine(result);
-            done(err);
-        });
+    it('url single quotes', async () => {
+        const input = "@import url('http://fonts.googleapis.com/css?family=Tangerine');";
+        const result = await getResult(input);
+        assertOutputTangerine(result);
     });
 
-    it('url double quotes', function (done) {
-        var input = '@import url("http://fonts.googleapis.com/css?family=Tangerine");';
-        testContains(input, 'Tangerine', {}, {}, function (err, result) {
-            result && assertOutputTangerine(result);
-            done(err);
-        });
+    it('url double quotes', async () => {
+        const input = '@import url("http://fonts.googleapis.com/css?family=Tangerine");';
+        const result = await getResult(input);
+        assertOutputTangerine(result);
     });
 
-    it('url no quotes', function (done) {
-        var input = '@import url(http://fonts.googleapis.com/css?family=Tangerine);';
-        testContains(input, 'Tangerine', {}, {}, function (err, result) {
-            result && assertOutputTangerine(result);
-            done(err);
-        });
+    it('url no quotes', async () => {
+        const input = '@import url(http://fonts.googleapis.com/css?family=Tangerine);';
+        const result = await getResult(input);
+        assertOutputTangerine(result);
     });
 });
 
@@ -170,22 +155,22 @@ describe('recursive import', function () {
 
     describe('fixture-1', function () {
         it('fixture-1 contains class a1', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-1/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-1/style.css)';
             testContains(input, '.a1', opts, {}, done);
         });
 
         it('fixture-1 contains class a', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-1/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-1/style.css)';
             testContains(input, "content: '.a'", opts, {}, done);
         });
 
         it('fixture-1 contains class style content', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-1/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-1/style.css)';
             testContains(input, "content: '.style'", opts, {}, done);
         });
 
         it('fixture-1 contains class a when passed as a string', function (done) {
-            var input = fixture1Css;
+            const input = fixture1Css;
             testContains(
                 input,
                 "content: '.a'",
@@ -200,46 +185,46 @@ describe('recursive import', function () {
 
     describe('fixture-2', function () {
         it('fixture-2 contains class a1', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-2/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-2/style.css)';
             testContains(input, "content: '.a1'", opts, {}, done);
         });
 
         it('fixture-2 contains class a', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-2/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-2/style.css)';
             testContains(input, "content: '.a'", opts, {}, done);
         });
 
         it('fixture-2 contains class b1', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-2/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-2/style.css)';
             testContains(input, "content: '.b1'", opts, {}, done);
         });
 
         it('fixture-2 contains class b', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-2/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-2/style.css)';
             testContains(input, "content: '.b'", opts, {}, done);
         });
 
         it('fixture-2 contains class style content', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-2/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-2/style.css)';
             testContains(input, "content: '.style'", opts, {}, done);
         });
     });
 
     describe('fixture-3 convert relative paths in property values', function () {
         it('does not resolve relative URLs by default', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-3/style.css)';
             testContains(input, "src: url('./font.woff');", {}, {}, done);
         });
 
         it('does not resolve relative URLs when option.resolveURLs is false', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-3/style.css)';
             testContains(input, "src: url('./font.woff');", { resolveUrls: false }, {}, done);
         });
 
         var _opts = { resolveUrls: true };
 
         it('resolves relative URLs when option.resolveURLs is true', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-3/style.css)';
             testContains(
                 input,
                 'src: url("http://localhost:1234/fixture-3/font.woff");',
@@ -250,7 +235,7 @@ describe('recursive import', function () {
         });
 
         it('does not modify absolute paths', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-3/style.css)';
             testContains(
                 input,
                 'background-image: url("http://example.com/absolute.png");',
@@ -261,7 +246,7 @@ describe('recursive import', function () {
         });
 
         it('makes root relative paths absolute', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-3/style.css)';
             testContains(
                 input,
                 'background-image: url("http://localhost:1234/root-relative.png")',
@@ -272,7 +257,7 @@ describe('recursive import', function () {
         });
 
         it('makes implicit sibling paths absolute', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-3/style.css)';
             testContains(
                 input,
                 'background-image: url("http://localhost:1234/fixture-3/implicit-sibling.png")',
@@ -283,7 +268,7 @@ describe('recursive import', function () {
         });
 
         it('makes relative sibling paths absolute', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-3/style.css)';
             testContains(
                 input,
                 'background-image: url("http://localhost:1234/fixture-3/sibling.png")',
@@ -294,7 +279,7 @@ describe('recursive import', function () {
         });
 
         it('makes parent relative paths absolute', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-3/style.css)';
             testContains(
                 input,
                 'background-image: url("http://localhost:1234/parent.png")',
@@ -305,7 +290,7 @@ describe('recursive import', function () {
         });
 
         it('makes grandparent relative paths absolute', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-3/style.css)';
             testContains(
                 input,
                 'background-image: url("http://localhost:1234/grandparent.png")',
@@ -319,7 +304,7 @@ describe('recursive import', function () {
 
         // Test paths are resolved for recursively imported stylesheets
         it('makes relative sibling paths absolute - recursive', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-3/style.css)';
             testContains(
                 input,
                 'background-image: url("http://localhost:1234/fixture-3/recursive/sibling-recursive.png")',
@@ -330,7 +315,7 @@ describe('recursive import', function () {
         });
 
         it('makes parent relative paths absolute - recursive', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-3/style.css)';
             testContains(
                 input,
                 'background-image: url("http://localhost:1234/fixture-3/parent-recursive.png")',
@@ -341,7 +326,7 @@ describe('recursive import', function () {
         });
 
         it('makes grandparent relative paths absolute - recursive', function (done) {
-            var input = '@import url(http://localhost:1234/fixture-3/style.css)';
+            const input = '@import url(http://localhost:1234/fixture-3/style.css)';
             testContains(
                 input,
                 'background-image: url("http://localhost:1234/grandparent-recursive.png")',
@@ -355,14 +340,14 @@ describe('recursive import', function () {
 
 describe('google font woff', function () {
     it('option modernBrowser should import woff', function (done) {
-        var input = '@import url(http://fonts.googleapis.com/css?family=Tangerine);';
+        const input = '@import url(http://fonts.googleapis.com/css?family=Tangerine);';
         testContains(input, "woff2) format('woff2')", { modernBrowser: true }, {}, done);
     });
 
     it('option agent should import woff', function (done) {
-        var input = '@import url(http://fonts.googleapis.com/css?family=Tangerine);';
+        const input = '@import url(http://fonts.googleapis.com/css?family=Tangerine);';
         var opts = {
-            userAgent: 'Mozilla/5.0 AppleWebKit/537.36 Chrome/54.0.2840.99 Safari/537.36',
+            userAgent: 'Mozilla/5.0 AppleWebKit/537.36 Chrome/80.0.2840.99 Safari/537.36',
         };
         testContains(input, "woff2) format('woff2')", opts, {}, done);
     });

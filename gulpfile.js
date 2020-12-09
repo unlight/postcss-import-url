@@ -19,6 +19,15 @@ gulp.task('test', function () {
         .on('end', connect.serverClose);
 });
 
+gulp.task('test:w', function () {
+    var startServer = gulp.task('start-server');
+    startServer();
+    return gulp
+        .src('test/*.js', { read: false })
+        .pipe(mocha({ timeout: 5000, watch: true }))
+        .on('end', connect.serverClose);
+});
+
 gulp.task('default', gulp.series(['lint', 'test']));
 
 gulp.task('watch', function () {
