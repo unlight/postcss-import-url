@@ -48,7 +48,3 @@ See [PostCSS](https://github.com/postcss/postcss#usage) docs for examples for yo
 -   Google fonts returns different file types per the user agent. Because postcss runs in a shell,
     Google returns truetype fonts rather than the better woff2 format.
     Use option `modernBrowser` to explicitly load woff2 fonts.
-
-## Changelog
-
-See [CHANGELOG](CHANGELOG.md)
