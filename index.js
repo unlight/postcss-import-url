@@ -1,5 +1,5 @@
 var postcss = require('postcss');
-var hh = require('http-https');
+var request = require('request');
 var isUrl = require('is-url');
 var trim = require('lodash.trim');
 var resolveRelative = require('resolve-relative-url');
@@ -11,7 +11,6 @@ var defaults = {
     userAgent: null,
 };
 var space = postcss.list.space;
-var url = require('url');
 var urlRegexp = /url\(["']?.+?['"]?\)/g;
 
 function postcssImportUrl(options) {
@@ -81,9 +80,12 @@ function resolveUrls(to, from) {
 }
 
 function createPromise(remoteFile, options) {
-    var reqOptions = url.parse(remoteFile);
-    reqOptions.headers = {};
-    reqOptions.headers['connection'] = 'keep-alive';
+    var reqOptions = {
+        url: remoteFile,
+        headers: {
+            connection: 'keep-alive',
+        },
+    };
     if (options.modernBrowser) {
         reqOptions.headers['user-agent'] =
             'Mozilla/5.0 AppleWebKit/538.0 Chrome/80.0.0.0 Safari/538';
@@ -92,20 +94,15 @@ function createPromise(remoteFile, options) {
         reqOptions.headers['user-agent'] = String(options.userAgent);
     }
     function executor(resolve, reject) {
-        var request = hh.get(reqOptions, function (response) {
-            var body = '';
-            response.on('data', function (chunk) {
-                body += chunk.toString();
-            });
-            response.on('end', function () {
-                resolve({
-                    body: body,
-                    parent: remoteFile,
-                });
+        request(remoteFile, reqOptions, function (error, response) {
+            if (error) {
+                return reject(error);
+            }
+            resolve({
+                body: response.body,
+                parent: remoteFile,
             });
         });
-        request.on('error', reject);
-        request.end();
     }
     return new Promise(executor);
 }
