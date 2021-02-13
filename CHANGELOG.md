@@ -1,3 +1,10 @@
+## [6.0.1](https://github.com/unlight/postcss-import-url/compare/v6.0.0...v6.0.1) (2021-02-13)
+
+
+### Bug Fixes
+
+* Set element source property ([8405f32](https://github.com/unlight/postcss-import-url/commit/8405f32b9aa09bef534e67717bf7de3d52477547)), closes [#27](https://github.com/unlight/postcss-import-url/issues/27)
+
 # [6.0.0](https://github.com/unlight/postcss-import-url/compare/v5.1.0...v6.0.0) (2020-12-09)
 
 
