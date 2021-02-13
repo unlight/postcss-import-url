@@ -1,3 +1,10 @@
+## [6.0.2](https://github.com/unlight/postcss-import-url/compare/v6.0.1...v6.0.2) (2021-02-13)
+
+
+### Bug Fixes
+
+* Revert set element source property ([e7207c8](https://github.com/unlight/postcss-import-url/commit/e7207c8ea7ad2f28e8ae2771781b4e20d38dd8e3))
+
 ## [6.0.1](https://github.com/unlight/postcss-import-url/compare/v6.0.0...v6.0.1) (2021-02-13)
 
 
