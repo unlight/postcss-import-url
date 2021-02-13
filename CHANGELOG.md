@@ -1,3 +1,15 @@
+# [7.0.0](https://github.com/unlight/postcss-import-url/compare/v6.0.4...v7.0.0) (2021-02-13)
+
+
+### Bug Fixes
+
+* Set element source property [#27](https://github.com/unlight/postcss-import-url/issues/27) ([a4687df](https://github.com/unlight/postcss-import-url/commit/a4687dfb5c9a77531b6869711d1ce38d09d17a6a))
+
+
+### BREAKING CHANGES
+
+* Node LTS is required (v12+)
+
 ## [6.0.4](https://github.com/unlight/postcss-import-url/compare/v6.0.3...v6.0.4) (2021-02-13)
 
 
