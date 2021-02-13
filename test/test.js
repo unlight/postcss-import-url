@@ -3,14 +3,11 @@ const expect = require('expect');
 const fs = require('fs');
 const plugin = require('../');
 const tcpp = require('tcp-ping');
-const log = require('ololog');
 
-const fixture1Css = fs.readFileSync(__dirname + '/fixture-1/style.css', {
-    encoding: 'utf8',
-});
+const fixture1Css = fs.readFileSync(__dirname + '/fixture-1/style.css', { encoding: 'utf8' });
 
 const testEqual = function (input, output, pluginOptions, postcssOptions, done) {
-    getResult(input, pluginOptions, postcssOptions).then(result => {
+    getResult(input, pluginOptions, postcssOptions).then((result) => {
         expect(result.css.trim()).toEqual(output.trim());
         expect(result.warnings()).toHaveLength(0);
         done();
@@ -18,7 +15,7 @@ const testEqual = function (input, output, pluginOptions, postcssOptions, done) 
 };
 
 const testContains = function (input, value, pluginOptions, postcssOptions, done) {
-    getResult(input, pluginOptions, postcssOptions).then(result => {
+    getResult(input, pluginOptions, postcssOptions).then((result) => {
         expect(result.css).toContain(value);
         expect(result.warnings()).toHaveLength(0);
         done();
@@ -53,8 +50,7 @@ describe('import with media queries', function () {
     });
 
     it('rule print', function (done) {
-        const input =
-            "@import url('http://fonts.googleapis.com/css?family=Tangerine') print";
+        const input = "@import url('http://fonts.googleapis.com/css?family=Tangerine') print";
         testContains(input, '@media print', {}, {}, done);
     });
 
@@ -110,8 +106,7 @@ describe('import url tangerine', function () {
     }
 
     it('empty', async () => {
-        const input =
-            "@import 'http://fonts.googleapis.com/css?family=Tangerine'            ;";
+        const input = "@import 'http://fonts.googleapis.com/css?family=Tangerine'            ;";
         const result = await getResult(input);
         assertOutputTangerine(result);
     });
@@ -129,15 +124,13 @@ describe('import url tangerine', function () {
     });
 
     it('url single quotes', async () => {
-        const input =
-            "@import url('http://fonts.googleapis.com/css?family=Tangerine');";
+        const input = "@import url('http://fonts.googleapis.com/css?family=Tangerine');";
         const result = await getResult(input);
         assertOutputTangerine(result);
     });
 
     it('url double quotes', async () => {
-        const input =
-            '@import url("http://fonts.googleapis.com/css?family=Tangerine");';
+        const input = '@import url("http://fonts.googleapis.com/css?family=Tangerine");';
         const result = await getResult(input);
         assertOutputTangerine(result);
     });
@@ -150,7 +143,7 @@ describe('import url tangerine', function () {
 });
 
 describe('recursive import', function () {
-    it('ping server', done => {
+    it('ping server', (done) => {
         tcpp.probe('localhost', 1234, function (err) {
             done(err);
         });
@@ -225,13 +218,7 @@ describe('recursive import', function () {
 
         it('does not resolve relative URLs when option.resolveURLs is false', function (done) {
             const input = '@import url(http://localhost:1234/fixture-3/style.css)';
-            testContains(
-                input,
-                "src: url('./font.woff');",
-                { resolveUrls: false },
-                {},
-                done,
-            );
+            testContains(input, "src: url('./font.woff');", { resolveUrls: false }, {}, done);
         });
 
         var _opts = { resolveUrls: true };
@@ -354,36 +341,14 @@ describe('recursive import', function () {
 describe('google font woff', function () {
     it('option modernBrowser should import woff', function (done) {
         const input = '@import url(http://fonts.googleapis.com/css?family=Tangerine);';
-        testContains(
-            input,
-            "woff2) format('woff2')",
-            { modernBrowser: true },
-            {},
-            done,
-        );
+        testContains(input, "woff2) format('woff2')", { modernBrowser: true }, {}, done);
     });
 
     it('option agent should import woff', function (done) {
         const input = '@import url(http://fonts.googleapis.com/css?family=Tangerine);';
         var opts = {
-            userAgent:
-                'Mozilla/5.0 AppleWebKit/537.36 Chrome/80.0.2840.99 Safari/537.36',
+            userAgent: 'Mozilla/5.0 AppleWebKit/537.36 Chrome/80.0.2840.99 Safari/537.36',
         };
         testContains(input, "woff2) format('woff2')", opts, {}, done);
-    });
-});
-
-describe('source property', () => {
-    it('regular import', async () => {
-        const input = '@import url(http://fonts.googleapis.com/css?family=Tangerine)';
-        const result = await getResult(input);
-        expect(result.root.source.input.css).toEqual(input);
-    });
-
-    it('media import', async () => {
-        const input =
-            '@import url(http://fonts.googleapis.com/css?family=Tangerine) print';
-        const result = await getResult(input);
-        expect(result.root.source.input.css).toEqual(input);
     });
 });
