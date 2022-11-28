@@ -33,8 +33,8 @@ function postcssImportUrl(options) {
             imports[imports.length] = createPromise(remoteFile, options).then(
                 async r => {
                     let newNode = postcss.parse(r.body);
-                    let hasLayer = params.find(param => param.includes('layer'))
-                    const mediaQueries = params.slice(hasLayer?2:1).join(' ');
+                    let hasLayer = params.find(param => param.includes('layer'));
+                    const mediaQueries = params.slice(hasLayer ? 2 : 1).join(' ');
                     if (mediaQueries) {
                         const mediaNode = postcss.atRule({
                             name: 'media',
@@ -47,21 +47,21 @@ function postcssImportUrl(options) {
                         newNode.source = atRule.source;
                     }
 
-                    if (hasLayer){
+                    if (hasLayer) {
                         const layer = params.find(param => param.includes('layer'));
-                        
+
                         let init = layer.indexOf('(');
                         let fin = layer.indexOf(')');
-                        let layerName = layer.substr(init+1,fin-init-1);
+                        let layerName = layer.substr(init + 1, fin - init - 1);
 
                         const layerNode = postcss.atRule({
                             name: 'layer',
                             params: layerName,
                             source: newNode.source,
-                        })
+                        });
 
                         layerNode.append(newNode);
-                        newNode = layerNode
+                        newNode = layerNode;
                     }
 
                     if (options.resolveUrls) {
