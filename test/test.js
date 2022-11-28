@@ -95,6 +95,12 @@ describe('import with media queries', function () {
                 "@import url('http://fonts.googleapis.com/css?family=Tangerine') layer(test) (min-width: 25em);";
             testContains(input, '@layer test {@media (min-width: 25em)', {}, {}, done);
         });
+
+        it('contains layer with @supports', function (done) {
+            const input =
+                "@import url('http://fonts.googleapis.com/css?family=Tangerine') layer(test) @supports(display: flex);";
+            testContains(input, '@layer test {@supports (display: flex)', {}, {}, done);
+        });
     });
 });
 
