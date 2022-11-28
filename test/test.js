@@ -83,6 +83,12 @@ describe('import with media queries', function () {
             const result = await getResult(input);
             expect(result.css).toContain('@media (min-width: 25em) {@font-face');
         });
+
+        it('contains layer', function (done) {
+            const input =
+                "@import url('http://fonts.googleapis.com/css?family=Tangerine') layer(test) (min-width: 25em);";
+            testContains(input, '@layer test {@media (min-width: 25em)', {}, {}, done);
+        });
     });
 });
 
