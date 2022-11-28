@@ -34,7 +34,12 @@ function postcssImportUrl(options) {
                 async r => {
                     let newNode = postcss.parse(r.body);
                     let hasLayer = params.find(param => param.includes('layer'));
-                    const mediaQueries = params.slice(hasLayer ? 2 : 1).join(' ');
+                    let hasSupports = params.find(param => param.includes('supports'));
+
+                    const mediaQueries = params
+                        .slice(hasLayer ? (hasSupports ? 3 : 2) : 1)
+                        .join(' ');
+
                     if (mediaQueries) {
                         const mediaNode = postcss.atRule({
                             name: 'media',
@@ -43,6 +48,26 @@ function postcssImportUrl(options) {
                         });
                         mediaNode.append(newNode);
                         newNode = mediaNode;
+                    } else {
+                        newNode.source = atRule.source;
+                    }
+
+                    if (hasSupports) {
+                        const supportQuery = params.find(param =>
+                            param.includes('supports'),
+                        );
+
+                        let init = supportQuery.indexOf('(');
+                        let fin = supportQuery.indexOf(')');
+                        let query = supportQuery.substr(init + 1, fin - init - 1);
+
+                        const supportsNode = postcss.atRule({
+                            name: 'supports',
+                            params: `(${query})`,
+                            source: atRule.source,
+                        });
+                        supportsNode.append(newNode);
+                        newNode = supportsNode;
                     } else {
                         newNode.source = atRule.source;
                     }
