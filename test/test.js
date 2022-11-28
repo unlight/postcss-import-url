@@ -58,6 +58,12 @@ describe('import with media queries', function () {
         testContains(input, '@media print', {}, {}, done);
     });
 
+    it('rule layer', function (done) {
+        const input =
+            "@import url('http://fonts.googleapis.com/css?family=Tangerine') layer(test);";
+        testContains(input, '@layer test {', {}, {}, done);
+    });
+
     it('contains it', function (done) {
         const input =
             "@import url('http://fonts.googleapis.com/css?family=Tangerine') (min-width: 25em);";
