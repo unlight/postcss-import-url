@@ -64,7 +64,7 @@ describe('import with media queries', function () {
         testContains(input, '@layer test {', {}, {}, done);
     });
 
-    it.only('rule anonymous layer', function (done) {
+    it('rule anonymous layer', function (done) {
         const input =
             "@import url('http://fonts.googleapis.com/css?family=Tangerine') layer;";
         testContains(input, '@layer {', {}, {}, done);
