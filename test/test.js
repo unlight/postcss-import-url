@@ -58,6 +58,18 @@ describe('import with media queries', function () {
         testContains(input, '@media print', {}, {}, done);
     });
 
+    it('rule layer', function (done) {
+        const input =
+            "@import url('http://fonts.googleapis.com/css?family=Tangerine') layer(test);";
+        testContains(input, '@layer test {', {}, {}, done);
+    });
+
+    it('rule anonymous layer', function (done) {
+        const input =
+            "@import url('http://fonts.googleapis.com/css?family=Tangerine') layer;";
+        testContains(input, '@layer {', {}, {}, done);
+    });
+
     it('contains it', function (done) {
         const input =
             "@import url('http://fonts.googleapis.com/css?family=Tangerine') (min-width: 25em);";
@@ -76,6 +88,42 @@ describe('import with media queries', function () {
                 "@import url('http://fonts.googleapis.com/css?family=Tangerine') (min-width: 25em);";
             const result = await getResult(input);
             expect(result.css).toContain('@media (min-width: 25em) {@font-face');
+        });
+
+        it('contains layer', function (done) {
+            const input =
+                "@import url('http://fonts.googleapis.com/css?family=Tangerine') layer(test) (min-width: 25em);";
+            testContains(
+                input,
+                '@layer test {@media (min-width: 25em) {@font-face',
+                {},
+                {},
+                done,
+            );
+        });
+
+        it('contains layer with @supports', function (done) {
+            const input =
+                "@import url('http://fonts.googleapis.com/css?family=Tangerine') layer(test) @supports(display: flex);";
+            testContains(
+                input,
+                '@layer test {@supports (display: flex) {@font-face',
+                {},
+                {},
+                done,
+            );
+        });
+
+        it('contains layer with @supports and @media', function (done) {
+            const input =
+                "@import url('http://fonts.googleapis.com/css?family=Tangerine') layer(test) @supports(display: flex) (min-width: 25em);";
+            testContains(
+                input,
+                '@layer test {@supports (display: flex) {@media (min-width: 25em) {@font-face',
+                {},
+                {},
+                done,
+            );
         });
     });
 });
