@@ -1,0 +1,46 @@
+name: 'Test / Build / Release'
+on:
+  - push
+  - pull_request
+
+jobs:
+  test:
+    name: 'Test'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v3
+      - name: 'Setup node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: 'Install depependencies'
+        run: npm install
+      - name: 'Test'
+        run: |
+          npm run test
+
+  release:
+    name: 'Release'
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/next')
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v3
+      - name: 'Setup Node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: 'Install depependencies'
+        run: |
+          npm install
+      - name: 'Build'
+        run: |
+          npm run build
+      - name: 'Release'
+        run: |
+          npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
