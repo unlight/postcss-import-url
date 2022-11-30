@@ -1,3 +1,10 @@
+# [7.1.0](https://github.com/unlight/postcss-import-url/compare/v7.0.0...v7.1.0) (2022-11-30)
+
+
+### Features
+
+* Support imports into `[@layer](https://github.com/layer)` ([7f42a8e](https://github.com/unlight/postcss-import-url/commit/7f42a8eb0e0bd547a135413de0e157770615fcf5)), closes [#28](https://github.com/unlight/postcss-import-url/issues/28)
+
 # [7.0.0](https://github.com/unlight/postcss-import-url/compare/v6.0.4...v7.0.0) (2021-02-13)
 
 
