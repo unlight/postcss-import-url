@@ -1,5 +1,5 @@
 const postcss = require('postcss');
-const expect = require('expect');
+const { default: expect } = require('expect');
 const fs = require('fs');
 const plugin = require('../');
 const tcpp = require('tcp-ping');
