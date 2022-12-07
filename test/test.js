@@ -457,3 +457,11 @@ describe('source property', () => {
     expect(result.root.source.input.css).toEqual(input);
   });
 });
+
+describe('base64 data urls', function () {
+  it('option dataUrls should converts imports to base64 encoded data urls', async () => {
+    const input = '@import url(http://fonts.googleapis.com/css?family=Tangerine);';
+    const result = await getResult(input, { dataUrls: true });
+    expect(result.css.trim()).toEqual('@import url(data:text/css;base64,QGZvbnQtZmFjZSB7CiAgZm9udC1mYW1pbHk6ICdUYW5nZXJpbmUnOwogIGZvbnQtc3R5bGU6IG5vcm1hbDsKICBmb250LXdlaWdodDogNDAwOwogIHNyYzogdXJsKGh0dHA6Ly9mb250cy5nc3RhdGljLmNvbS9zL3RhbmdlcmluZS92MTcvSXVyWTZZNWpfb1NjWlpvdzRWT3hDWlpKLnR0ZikgZm9ybWF0KCd0cnVldHlwZScpOwp9Cg==);');
+  });
+});
