@@ -11,6 +11,7 @@ const defaults = {
   resolveUrls: false,
   modernBrowser: false,
   userAgent: null,
+  dataUrls: false,
 };
 const space = postcss.list.space;
 const urlRegexp = /url\(["']?.+?['"]?\)/g;
@@ -96,10 +97,15 @@ function postcssImportUrl(options) {
             );
           }
 
-          const tree = await (options.recursive
+          const importedTree = await (options.recursive
             ? importUrl(newNode, null, r.parent)
             : Promise.resolve(newNode));
-          atRule.replaceWith(tree);
+
+          if (options.dataUrls) {
+            atRule.params = `url(data:text/css;base64,${Buffer.from(importedTree.toString()).toString('base64')})`;
+          } else {
+            atRule.replaceWith(importedTree);
+          }
         },
       );
     });
