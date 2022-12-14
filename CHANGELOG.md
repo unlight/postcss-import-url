@@ -1,3 +1,10 @@
+# [7.2.0](https://github.com/unlight/postcss-import-url/compare/v7.1.0...v7.2.0) (2022-12-14)
+
+
+### Features
+
+* Add support for base64 encoded data urls ([a70fc3c](https://github.com/unlight/postcss-import-url/commit/a70fc3c75ee5d2fc00cf5883c0387598b55fe438)), closes [#30](https://github.com/unlight/postcss-import-url/issues/30)
+
 # [7.1.0](https://github.com/unlight/postcss-import-url/compare/v7.0.0...v7.1.0) (2022-11-30)
 
 
