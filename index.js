@@ -131,13 +131,16 @@ function cleanupRemoteFile(value) {
 }
 
 function resolveUrls(to, from) {
-  return 'url("' + resolveRelative(cleanupRemoteFile(to), from) + '")';
+  return 'url("' + new URL(cleanupRemoteFile(to), from).href + '")';
 }
 
 function createPromise(remoteFile, options) {
-  const reqOptions = urlParse(remoteFile);
-  reqOptions.headers = {};
-  reqOptions.headers['connection'] = 'keep-alive';
+  const reqOptions = {
+    url: remoteFile,
+    headers: {
+      connection: 'keep-alive',
+    },
+  };
   if (options.modernBrowser) {
     reqOptions.headers['user-agent'] =
       'Mozilla/5.0 AppleWebKit/538.0 Chrome/88.0.0.0 Safari/538';
@@ -145,23 +148,6 @@ function createPromise(remoteFile, options) {
   if (options.userAgent) {
     reqOptions.headers['user-agent'] = String(options.userAgent);
   }
-  function executor(resolve, reject) {
-    const request = hh.get(reqOptions, response => {
-      let body = '';
-      response.on('data', chunk => {
-        body += chunk.toString();
-      });
-      response.on('end', () => {
-        resolve({
-          body: body,
-          parent: remoteFile,
-        });
-      });
-    });
-    request.on('error', reject);
-    request.end();
-  }
-  return new Promise(executor);
   function executor(resolve, reject) {
     axios(reqOptions)
       .then(response => {
@@ -174,9 +160,5 @@ function createPromise(remoteFile, options) {
         return reject(error);
       });
   }
-}
-
-function urlParse(remoteFile) {
-  const reqOptions = url.parse(remoteFile);
-  return reqOptions;
+  return new Promise(executor);
 }
