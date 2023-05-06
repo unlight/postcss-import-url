@@ -21,11 +21,10 @@
     "test:w": "gulp test:w"
   },
   "dependencies": {
-    "http-https": "^1.0.0",
+    "axios": "^1.4.0",
     "is-url": "^1.2.4",
     "lodash.assign": "^4.2.0",
-    "lodash.trim": "^4.5.1",
-    "resolve-relative-url": "^1.0.0"
+    "lodash.trim": "^4.5.1"
   },
   "peerDependencies": {
     "postcss": "^8.0.0"

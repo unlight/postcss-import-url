@@ -1,10 +1,8 @@
 const postcss = require('postcss');
-const hh = require('http-https');
+const axios = require('axios');
 const isUrl = require('is-url');
 const trim = require('lodash.trim');
-const resolveRelative = require('resolve-relative-url');
 const assign = require('lodash.assign');
-const url = require('url');
 
 const defaults = {
   recursive: true,
@@ -26,7 +24,7 @@ function postcssImportUrl(options) {
       const params = space(atRule.params);
       let remoteFile = cleanupRemoteFile(params[0]);
       if (parentRemoteFile) {
-        remoteFile = resolveRelative(remoteFile, parentRemoteFile);
+        remoteFile = new URL(remoteFile, parentRemoteFile).href;
       }
       if (!isUrl(remoteFile)) {
         return;
@@ -102,7 +100,9 @@ function postcssImportUrl(options) {
             : Promise.resolve(newNode));
 
           if (options.dataUrls) {
-            atRule.params = `url(data:text/css;base64,${Buffer.from(importedTree.toString()).toString('base64')})`;
+            atRule.params = `url(data:text/css;base64,${Buffer.from(
+              importedTree.toString(),
+            ).toString('base64')})`;
           } else {
             atRule.replaceWith(importedTree);
           }
@@ -162,6 +162,18 @@ function createPromise(remoteFile, options) {
     request.end();
   }
   return new Promise(executor);
+  function executor(resolve, reject) {
+    axios(reqOptions)
+      .then(response => {
+        resolve({
+          body: response.data,
+          parent: remoteFile,
+        });
+      })
+      .catch(error => {
+        return reject(error);
+      });
+  }
 }
 
 function urlParse(remoteFile) {
