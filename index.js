@@ -1,10 +1,8 @@
 const postcss = require('postcss');
-const hh = require('http-https');
+const axios = require('axios');
 const isUrl = require('is-url');
 const trim = require('lodash.trim');
-const resolveRelative = require('resolve-relative-url');
 const assign = require('lodash.assign');
-const url = require('url');
 
 const defaults = {
   recursive: true,
@@ -26,7 +24,7 @@ function postcssImportUrl(options) {
       const params = space(atRule.params);
       let remoteFile = cleanupRemoteFile(params[0]);
       if (parentRemoteFile) {
-        remoteFile = resolveRelative(remoteFile, parentRemoteFile);
+        remoteFile = new URL(remoteFile, parentRemoteFile).href;
       }
       if (!isUrl(remoteFile)) {
         return;
@@ -102,7 +100,9 @@ function postcssImportUrl(options) {
             : Promise.resolve(newNode));
 
           if (options.dataUrls) {
-            atRule.params = `url(data:text/css;base64,${Buffer.from(importedTree.toString()).toString('base64')})`;
+            atRule.params = `url(data:text/css;base64,${Buffer.from(
+              importedTree.toString(),
+            ).toString('base64')})`;
           } else {
             atRule.replaceWith(importedTree);
           }
@@ -131,13 +131,16 @@ function cleanupRemoteFile(value) {
 }
 
 function resolveUrls(to, from) {
-  return 'url("' + resolveRelative(cleanupRemoteFile(to), from) + '")';
+  return 'url("' + new URL(cleanupRemoteFile(to), from).href + '")';
 }
 
 function createPromise(remoteFile, options) {
-  const reqOptions = urlParse(remoteFile);
-  reqOptions.headers = {};
-  reqOptions.headers['connection'] = 'keep-alive';
+  const reqOptions = {
+    url: remoteFile,
+    headers: {
+      connection: 'keep-alive',
+    },
+  };
   if (options.modernBrowser) {
     reqOptions.headers['user-agent'] =
       'Mozilla/5.0 AppleWebKit/538.0 Chrome/88.0.0.0 Safari/538';
@@ -146,25 +149,16 @@ function createPromise(remoteFile, options) {
     reqOptions.headers['user-agent'] = String(options.userAgent);
   }
   function executor(resolve, reject) {
-    const request = hh.get(reqOptions, response => {
-      let body = '';
-      response.on('data', chunk => {
-        body += chunk.toString();
-      });
-      response.on('end', () => {
+    axios(reqOptions)
+      .then(response => {
         resolve({
-          body: body,
+          body: response.data,
           parent: remoteFile,
         });
+      })
+      .catch(error => {
+        return reject(error);
       });
-    });
-    request.on('error', reject);
-    request.end();
   }
   return new Promise(executor);
-}
-
-function urlParse(remoteFile) {
-  const reqOptions = url.parse(remoteFile);
-  return reqOptions;
 }
